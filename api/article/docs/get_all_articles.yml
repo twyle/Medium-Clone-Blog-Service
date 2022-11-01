@@ -1,0 +1,15 @@
+description: Get all the articles
+tags:
+  - Article
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+get:
+  description: Get all the articles.
+responses:
+  200:
+    description: When all articles are successfully obtained.
+
+  400:
+    description: Fails to list all articles due to bad request data

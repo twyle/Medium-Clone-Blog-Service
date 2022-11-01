@@ -1,0 +1,24 @@
+description: Delete an article with the given id
+tags:
+  - Article
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the article id
+    required: true
+    name: 'id'
+    type: 'string'
+responses:
+  200:
+    description: When an article is successfully deleted.
+
+  400:
+    description: Fails to delete article due to bad request data
+
+  401:
+    description: Fails to delete article due to missing articleization headers.
+  422:
+    description: Fails to delete article due to missing segments in articleization header.

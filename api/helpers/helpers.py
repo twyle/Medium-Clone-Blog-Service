@@ -7,6 +7,7 @@ from ..extensions import (
 )
 from flasgger import LazyJSONEncoder
 from ..author import author
+from ..article import article
 
 
 def register_extensions(app):
@@ -21,4 +22,5 @@ def register_extensions(app):
 
 def register_blueprints(app):
     app.register_blueprint(author, url_prefix='/author')
+    app.register_blueprint(article, url_prefix='/article')
     

@@ -13,8 +13,8 @@ cors = CORS()
 swagger_template = {
     "swagger": "2.0",
     "info": {
-        "title": "Blog User Management System.",
-        "description": "An application for managing user registration, authentication and authorization.",
+        "title": "Article Publishing App.",
+        "description": "An application for creating and publishing articles.",
         "contact": {
             "responsibleOrganization": "",
             "responsibleDeveloper": "",
