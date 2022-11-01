@@ -1,0 +1,30 @@
+description: Author Registration
+tags:
+  - Author
+produces:
+  - "application/json"
+parameters:
+  - name: "First Name"
+    description: "The First name"
+    required: true
+    in: "formData"
+    type: string
+  - name: "Email Address"
+    description: "The author email"
+    required: true
+    in: "formData"
+    type: string
+  - name: "Password"
+    description: "The author password"
+    required: true
+    in: "formData"
+    type: string
+responses:
+  201:
+    description: When an author succesfully registers.
+
+  400:
+    description: Fails to Register author due to bad request data
+
+  409:
+    description: Fails to Register author since author with given details exists.

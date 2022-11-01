@@ -1,0 +1,15 @@
+description: Get all the authors
+tags:
+  - Author
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+get:
+  description: Get all the authors.
+responses:
+  200:
+    description: When all authors are successfully obtained.
+
+  400:
+    description: Fails to list all authors due to bad request data

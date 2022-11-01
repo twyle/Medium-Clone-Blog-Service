@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from .config import Config
+from .helpers import register_extensions, register_blueprints
 
 
 def create_app(config_name='default'):
@@ -7,6 +8,8 @@ def create_app(config_name='default'):
     app = Flask(__name__)
     
     app.config.from_object(Config[config_name])
+    register_extensions(app)
+    register_blueprints(app)
     
     @app.route('/')
     def health_check():

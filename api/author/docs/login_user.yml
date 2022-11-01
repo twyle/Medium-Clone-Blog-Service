@@ -1,0 +1,37 @@
+description: Author Login
+tags:
+  - Author
+produces:
+  - "application/json"
+parameters:
+  - in: query
+    description: The query should contain the author id
+    required: true
+    name: 'id'
+    type: 'string'
+  - name: body
+    description: The body should contain the Author's Login data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "email"
+        - "password"
+      properties:
+        email:
+          type: "email"
+          example: "lyle@gmail.com"
+        password:
+          type: "string"
+          format: password
+          example: "********"
+responses:
+  201:
+    description: When a user succesfully logs in.
+
+  400:
+    description: Fails to log-in due to bad request data
+
+  401:
+    description: Fails to Login due to invalid credentials.

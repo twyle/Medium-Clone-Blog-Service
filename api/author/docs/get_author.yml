@@ -1,0 +1,25 @@
+description: Get an author with a given id
+tags:
+  - Author
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the author id
+    required: true
+    name: 'id'
+    type: 'string'
+responses:
+  200:
+    description: When an Author is successfully obtained.
+
+  400:
+    description: Fails to get author due to bad request data
+
+  401:
+    description: Fails to egt author due to missing authorization headers.
+
+  422:
+    description: Fails to get author due to missing segments in authorization header.
