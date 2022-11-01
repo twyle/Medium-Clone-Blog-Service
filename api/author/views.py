@@ -57,3 +57,61 @@ def get_all_authors():
     """List all authors."""
     # return handle_list_authors()
     return jsonify({'success': 'list authors'})
+
+
+@swag_from(
+    "./docs/comments.yml", endpoint="author.get_comments", methods=["GET"]
+)
+@author.route("/comments", methods=["GET"])
+def get_comments():
+    """List author comments."""
+    # return handle_list_authors()
+    return jsonify({'success': 'authors comments'})
+
+
+@swag_from(
+    "./docs/likes.yml", endpoint="author.get_likes", methods=["GET"]
+)
+@author.route("/likes", methods=["GET"])
+def get_likes():
+    """List author likes."""
+    # return handle_list_authors()
+    return jsonify({'success': 'authors likes'})
+
+@swag_from(
+    "./docs/bookmarks.yml", endpoint="author.get_bookmarks", methods=["GET"]
+)
+@author.route("/bookmarks", methods=["GET"])
+def get_bookmarks():
+    """List author bookmarks."""
+    # return handle_list_authors()
+    return jsonify({'success': 'authors bookmarks'})
+
+@swag_from(
+    "./docs/articles_published.yml", endpoint="author.get_articles_published", methods=["GET"]
+)
+@author.route("/articles_published", methods=["GET"])
+def get_articles_published():
+    """List author articles published."""
+    # return handle_list_authors()
+    return jsonify({'success': 'authors articles published'})
+
+
+@swag_from(
+    "./docs/articles_read.yml", endpoint="author.get_articles_read", methods=["GET"]
+)
+@author.route("/articles_read", methods=["GET"])
+def get_articles_read():
+    """List author articles read."""
+    # return handle_list_authors()
+    return jsonify({'success': 'authors articles read'})
+
+
+@swag_from(
+    "./docs/stats.yml", endpoint="author.get_stats", methods=["GET"]
+)
+@author.route("/stats", methods=["GET"])
+def get_stats():
+    """List author articles read."""
+    # return handle_list_authors()
+    return jsonify({'success': 'authors articles stats'})
