@@ -106,3 +106,83 @@ def get_stats():
     """List article articles read."""
     # return handle_list_articles()
     return jsonify({'success': 'articles articles stats'})
+
+
+@swag_from(
+    "./docs/bookmark.yml", endpoint="article.bookmark_article", methods=["GET"]
+)
+@article.route("/bookmark", methods=["GET"])
+def bookmark_article():
+    """Bookmark an article."""
+    # return handle_create_article(request.form, request.files)
+    return jsonify({'success': 'bookmark article'})
+
+
+@swag_from(
+    "./docs/unbookmark.yml", endpoint="article.unbookmark_article", methods=["GET"]
+)
+@article.route("/unbookmark", methods=["GET"])
+def unbookmark_article():
+    """Unbookmark an article."""
+    # return handle_create_article(request.form, request.files)
+    return jsonify({'success': 'unbookmark article'})
+
+
+@swag_from(
+    "./docs/like.yml", endpoint="article.like_article", methods=["GET"]
+)
+@article.route("/like", methods=["GET"])
+def like_article():
+    """Like an article."""
+    # return handle_create_article(request.form, request.files)
+    return jsonify({'success': 'like article'})
+
+
+@swag_from(
+    "./docs/unlike.yml", endpoint="article.unlike_article", methods=["GET"]
+)
+@article.route("/unlike", methods=["GET"])
+def unlike_article():
+    """Unlike an article."""
+    # return handle_create_article(request.form, request.files)
+    return jsonify({'success': 'unlike article'})
+
+
+@swag_from(
+    "./docs/tag.yml", endpoint="article.tag_article", methods=["GET"]
+)
+@article.route("/tag", methods=["GET"])
+def tag_article():
+    """Tag an article."""
+    # return handle_create_article(request.form, request.files)
+    return jsonify({'success': 'tag article'})
+
+
+@swag_from(
+    "./docs/untag.yml", endpoint="article.untag_article", methods=["GET"]
+)
+@article.route("/untag", methods=["GET"])
+def untag_article():
+    """Untag an article."""
+    # return handle_create_article(request.form, request.files)
+    return jsonify({'success': 'untag article'})
+
+
+@swag_from(
+    "./docs/report.yml", endpoint="article.report_article", methods=["POST"]
+)
+@article.route("/report", methods=["POST"])
+def report_article():
+    """Report an article."""
+    # return handle_create_article(request.form, request.files)
+    return jsonify({'success': 'report article'})
+
+
+@swag_from(
+    "./docs/comment.yml", endpoint="article.comment_article", methods=["POST"]
+)
+@article.route("/comment", methods=["POST"])
+def comment_article():
+    """Comment an article."""
+    # return handle_create_article(request.form, request.files)
+    return jsonify({'success': 'comment article'})
