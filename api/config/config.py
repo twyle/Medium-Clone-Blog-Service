@@ -21,6 +21,11 @@ class BaseConfig:
     
 class DevelopmentConfig(BaseConfig):
     """Development confuguration."""
+    EMAIL_MAX_LENGTH = int(os.getenv("EMAIL_MAX_LENGTH", "64"))
+    EMAIL_MIN_LENGTH = int(os.getenv("EMAIL_MIN_LENGTH", "8"))
+
+    NAME_MAX_LENGTH = int(os.getenv("NAME_MAX_LENGTH", "20"))
+    NAME_MIN_LENGTH = int(os.getenv("NAME_MIN_LENGTH", "2"))
 
 
 Config = {

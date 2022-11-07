@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from .config import Config
 from .helpers import register_extensions, register_blueprints
+from .extensions import db
 
 
 def create_app(config_name='default'):
@@ -15,6 +16,6 @@ def create_app(config_name='default'):
     def health_check():
         return jsonify({'success': 'hello from flask'}), 200
     
-    app.shell_context_processor({'app': app})
+    app.shell_context_processor({'app': app, 'db': db})
     
     return app

@@ -4,18 +4,13 @@ tags:
 produces:
   - "application/json"
 parameters:
-  - name: "First Name"
+  - name: "Name"
     description: "The First name"
     required: true
     in: "formData"
     type: string
   - name: "Email Address"
     description: "The author email"
-    required: true
-    in: "formData"
-    type: string
-  - name: "Password"
-    description: "The author password"
     required: true
     in: "formData"
     type: string

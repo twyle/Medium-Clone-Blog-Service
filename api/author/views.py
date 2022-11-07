@@ -2,12 +2,7 @@
 """This module contains all the author routes."""
 from flasgger import swag_from
 from flask import Blueprint, request, jsonify
-# from .controller import (
-#     handle_list_authors,
-#     handle_delete_author,
-#     handle_get_author,
-#     handle_update_author
-# )
+from .controller.author import handle_create_author
 
 author = Blueprint("author", __name__)
 
@@ -18,8 +13,7 @@ author = Blueprint("author", __name__)
 @author.route("/", methods=["POST"])
 def register_author():
     """Register an author."""
-    # return handle_create_author(request.form, request.files)
-    return jsonify({'success': 'register author'})
+    return handle_create_author(request.form)
 
 
 @swag_from("./docs/get_author.yml", endpoint="author.get_author", methods=["GET"])
