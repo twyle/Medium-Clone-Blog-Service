@@ -12,7 +12,8 @@ from .controller.author import (
     handle_articles_bookmarked,
     handle_articles_commented,
     handle_articles_liked,
-    handle_articles_viewed
+    handle_articles_viewed,
+    handle_author_stats
 )
 
 author = Blueprint("author", __name__)
@@ -108,5 +109,4 @@ def get_articles_read():
 @author.route("/stats", methods=["GET"])
 def get_stats():
     """List author articles read."""
-    # return handle_list_authors()
-    return jsonify({'success': 'authors articles stats'})
+    return handle_author_stats(request.args.get('id'))
