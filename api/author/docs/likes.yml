@@ -11,11 +11,6 @@ parameters:
     required: true
     name: 'id'
     type: 'string'
-  - in: query
-    description: The query should contain the article id
-    required: false
-    name: 'id'
-    type: 'string'
 responses:
   200:
     description: When an Author is successfully obtained.

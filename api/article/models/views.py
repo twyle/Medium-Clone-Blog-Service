@@ -1,7 +1,9 @@
 from ...extensions import db, ma
 from datetime import datetime
+from dataclasses import dataclass
 
 
+@dataclass
 class View(db.Model):
     """This model describes an instance of an article being read."""
     __tablename__ = 'views'

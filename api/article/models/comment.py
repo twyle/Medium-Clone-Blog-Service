@@ -1,7 +1,9 @@
 from ...extensions import db, ma
 from datetime import datetime
+from dataclasses import dataclass
 
 
+@dataclass
 class Comment(db.Model):
     """The Comment Model."""
     __tablename__ = 'comments'

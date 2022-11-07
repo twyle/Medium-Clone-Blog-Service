@@ -2,6 +2,7 @@ from .helper import validate_user_data
 from ..models.author import Author, author_schema, authors_schema
 from ...extensions import db
 from flask import jsonify
+from ...article.models.article import Article
 
 
 def create_author(author_data: dict):
@@ -126,3 +127,117 @@ def handle_update_author(author_id: str, author_data: dict):
 def handle_list_authors():
     """List all authors."""
     return authors_schema.dump(Author.all_users()), 200
+
+
+def articles_published(author_id: str):
+    """Delete an author."""
+    if not author_id:
+        raise ValueError('The author id has to be provided')
+    if not isinstance(author_id, str):
+        raise TypeError('The author id has to be a string')
+    if not Author.user_with_id_exists(int(author_id)):
+        raise ValueError(f'Their is no author with id {author_id}')
+    return Author.query.filter_by(id=author_id).first().articles_published, 200
+
+
+def handle_articles_published(author_id: str):
+    """Handle the get request for articles published."""
+    try:
+        articles = articles_published(author_id)
+    except (ValueError, TypeError) as e:
+        return jsonify({"error": str(e)}), 400
+    else:
+        return articles
+    
+
+def articles_bookmarked(author_id: str):
+    """Delete an author."""
+    if not author_id:
+        raise ValueError('The author id has to be provided')
+    if not isinstance(author_id, str):
+        raise TypeError('The author id has to be a string')
+    if not Author.user_with_id_exists(int(author_id)):
+        raise ValueError(f'Their is no author with id {author_id}')
+    return Author.query.filter_by(id=author_id).first().bookmarks, 200
+
+
+def handle_articles_bookmarked(author_id: str):
+    """Handle the get request for articles published."""
+    try:
+        bookmarks = articles_bookmarked(author_id)
+    except (ValueError, TypeError) as e:
+        return jsonify({"error": str(e)}), 400
+    else:
+        return bookmarks
+    
+def articles_commented(author_id: str, article_id: str):
+    """Delete an author."""
+    if not author_id:
+        raise ValueError('The author id has to be provided')
+    if not isinstance(author_id, str):
+        raise TypeError('The author id has to be a string')
+    if not Author.user_with_id_exists(int(author_id)):
+        raise ValueError(f'Their is no author with id {author_id}')
+    if article_id:
+        if not isinstance(article_id, str):
+            raise TypeError('The article id has to be a string')
+        if not Article.article_with_id_exists(int(article_id)):
+            raise ValueError(f'Their is no article with id {article_id}')
+        comments = Author.query.filter_by(id=author_id).first().comments
+        art_comments = []
+        for comment in comments:
+            if comment.article.id == int(article_id):
+                art_comments.append(comment)
+        return art_comments
+    return Author.query.filter_by(id=author_id).first().comments, 200
+
+
+def handle_articles_commented(author_id: str, article_id: str):
+    """Handle the get request for articles published."""
+    try:
+        comments = articles_commented(author_id, article_id)
+    except (ValueError, TypeError) as e:
+        return jsonify({"error": str(e)}), 400
+    else:
+        return comments
+
+
+def articles_liked(author_id: str):
+    """Delete an author."""
+    if not author_id:
+        raise ValueError('The author id has to be provided')
+    if not isinstance(author_id, str):
+        raise TypeError('The author id has to be a string')
+    if not Author.user_with_id_exists(int(author_id)):
+        raise ValueError(f'Their is no author with id {author_id}')
+    return Author.query.filter_by(id=author_id).first().likes, 200
+
+
+def handle_articles_liked(author_id: str):
+    """Handle the get request for articles published."""
+    try:
+        likes = articles_liked(author_id)
+    except (ValueError, TypeError) as e:
+        return jsonify({"error": str(e)}), 400
+    else:
+        return likes
+    
+def articles_viewed(author_id: str):
+    """Delete an author."""
+    if not author_id:
+        raise ValueError('The author id has to be provided')
+    if not isinstance(author_id, str):
+        raise TypeError('The author id has to be a string')
+    if not Author.user_with_id_exists(int(author_id)):
+        raise ValueError(f'Their is no author with id {author_id}')
+    return Author.query.filter_by(id=author_id).first().views, 200
+
+
+def handle_articles_viewed(author_id: str):
+    """Handle the get request for articles published."""
+    try:
+        views = articles_viewed(author_id)
+    except (ValueError, TypeError) as e:
+        return jsonify({"error": str(e)}), 400
+    else:
+        return views

@@ -1,8 +1,10 @@
 from ...extensions import db, ma
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import ARRAY
+from dataclasses import dataclass
 
 
+@dataclass
 class Article(db.Model):
     """The article class"""
     
@@ -18,5 +20,31 @@ class Article(db.Model):
     tags = db.Column(ARRAY(db.String(100)), default=['tech'])
     
     author = db.relationship("Author", backref='articles_published')
+    
+    @staticmethod
+    def article_with_id_exists(article_id):
+        """Check if article with given id exists."""
+        if Article.query.filter_by(id=article_id).first():
+            return True
+        return False
+    
+
+class ArticleSchema(ma.Schema):
+    """Show all the article information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = (
+            "id",
+            "title",
+            "text",
+            "image",
+            "date_published",
+            "tags"
+        )
+
+article_schema = ArticleSchema()
+articles_schema = ArticleSchema(many=True)
     
     

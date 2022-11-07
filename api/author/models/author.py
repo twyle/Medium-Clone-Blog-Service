@@ -95,6 +95,7 @@ class Author(db.Model):
         """Get a user."""
         user = Author.query.filter_by(id=user_id).first()
         return user 
+
     
 class AuthorSchema(ma.Schema):
     """Show all the user information."""
