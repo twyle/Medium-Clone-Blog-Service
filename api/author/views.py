@@ -2,7 +2,13 @@
 """This module contains all the author routes."""
 from flasgger import swag_from
 from flask import Blueprint, request, jsonify
-from .controller.author import handle_create_author
+from .controller.author import (
+    handle_create_author,
+    handle_get_author,
+    handle_delete_author,
+    handle_update_author,
+    handle_list_authors
+)
 
 author = Blueprint("author", __name__)
 
@@ -20,16 +26,14 @@ def register_author():
 @author.route("/", methods=["GET"])
 def get_author():
     """Get a an author by id."""
-    # return handle_get_author(request.args.get('id'))
-    return jsonify({'success': 'get author'})
+    return handle_get_author(request.args.get('id'))
 
 
 @swag_from("./docs/update_author.yml", endpoint="author.update_author", methods=["PUT"])
 @author.route("/", methods=["PUT"])
 def update_author():
     """Update the author with given id."""
-    # return handle_update_author(request.args.get("id"), request.form)
-    return jsonify({'success': 'update author'})
+    return handle_update_author(request.args.get("id"), request.form)
 
 
 @swag_from(
@@ -38,9 +42,7 @@ def update_author():
 @author.route("/", methods=["DELETE"])
 def delete_author():
     """Delete the author with given id."""
-    # return handle_delete_author(request.args.get('id'))
-    return jsonify({'success': 'delete author'})
-
+    return handle_delete_author(request.args.get('id'))
 
 
 @swag_from(
@@ -49,8 +51,7 @@ def delete_author():
 @author.route("/authors", methods=["GET"])
 def get_all_authors():
     """List all authors."""
-    # return handle_list_authors()
-    return jsonify({'success': 'list authors'})
+    return handle_list_authors()
 
 
 @swag_from(

@@ -13,7 +13,7 @@ class Author(db.Model):
     name: str = db.Column(db.String(100), nullable=False)
     email_address: str = db.Column(db.Text, nullable=False, unique=True)
     
-    @classmethod
+    @staticmethod
     def user_with_id_exists(user_id):
         """Check if user with given id exists."""
         if Author.query.filter_by(id=user_id).first():
@@ -55,7 +55,7 @@ class Author(db.Model):
         return is_email_address_format_valid(email)
     
     
-    @classmethod    
+    @staticmethod   
     def validate_user(user_id, email):
         """Check if user id and email belong to the same person."""
         if not id:
@@ -77,12 +77,12 @@ class Author(db.Model):
 
 
     
-    @classmethod    
-    def all_users(Author):
+    @staticmethod   
+    def all_users():
         """List all users."""
         return Author.query.all()
     
-    @classmethod    
+    @staticmethod    
     def delete_user(user_id: int):
         """Delete a user."""
         user = Author.query.filter_by(id=user_id).first()
@@ -90,7 +90,7 @@ class Author(db.Model):
         db.session.commit()
         return user
     
-    @classmethod    
+    @staticmethod   
     def get_user(user_id: int):
         """Get a user."""
         user = Author.query.filter_by(id=user_id).first()

@@ -13,7 +13,7 @@ parameters:
     required: true
     name: 'id'
     type: 'string'
-  - name: "First Name"
+  - name: "Name"
     description: "The First name"
     required: false
     in: "formData"
