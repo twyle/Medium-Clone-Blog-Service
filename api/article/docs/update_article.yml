@@ -5,14 +5,14 @@ produces:
   - "application/json"
 parameters:
   - in: query
-    description: The query should contain the author id
+    description: The query should contain the article id
     required: true
     name: 'id'
     type: 'string'
   - in: query
-    description: The query should contain the article id
+    description: The query should contain the author id
     required: true
-    name: 'id'
+    name: 'author id'
     type: 'string'
   - name: "Title"
     description: "Articles Title"

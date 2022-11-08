@@ -26,6 +26,9 @@ class DevelopmentConfig(BaseConfig):
 
     NAME_MAX_LENGTH = int(os.getenv("NAME_MAX_LENGTH", "20"))
     NAME_MIN_LENGTH = int(os.getenv("NAME_MIN_LENGTH", "2"))
+    
+    TITLE_MAX_LENGTH = int(os.getenv("TITLE_MAX_LENGTH", "100"))
+    TITLE_MIN_LENGTH = int(os.getenv("TITLE_MIN_LENGTH", "2"))
 
 
 Config = {

@@ -5,6 +5,12 @@ produces:
   - "application/json"
 security:
   - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the author id
+    required: false
+    name: 'author id'
+    type: 'string'
 get:
   description: Get all the articles.
 responses:

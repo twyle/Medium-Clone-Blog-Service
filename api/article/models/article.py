@@ -2,6 +2,7 @@ from ...extensions import db, ma
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import ARRAY
 from dataclasses import dataclass
+from flask import current_app
 
 
 @dataclass
@@ -27,6 +28,47 @@ class Article(db.Model):
         if Article.query.filter_by(id=article_id).first():
             return True
         return False
+    
+    @staticmethod
+    def validate_title(title):
+        """Validate the given title."""
+        if not title:
+            raise ValueError("The title has to be provided.")
+        if not isinstance(title, str):
+            raise ValueError("The title has to be string")
+        if len(title) >= current_app.config["TITLE_MAX_LENGTH"]:
+            raise ValueError(
+                f'The title has to be less than {current_app.config["TITLE_MAX_LENGTH"]}'
+            )
+        if len(title) <= current_app.config["TITLE_MIN_LENGTH"]:
+            raise ValueError(
+                f'The title has to be more than {current_app.config["TITLE_MIN_LENGTH"]}'
+            )
+
+        return True
+    
+    @staticmethod
+    def validate_text(text):
+        """Validate the given text."""
+        if not text:
+            raise ValueError("The text has to be provided.")
+        if not isinstance(text, str):
+            raise ValueError("The text has to be string")
+        return True
+    
+    @staticmethod   
+    def get_article(article_id: int):
+        """Get an article."""
+        article = Article.query.filter_by(id=article_id).first()
+        return article
+    
+    
+    @staticmethod   
+    def all_articles(author_id=None):
+        """List all users."""
+        if author_id:
+            return Article.query.filter_by(author_id=author_id)
+        return Article.query.all()
     
 
 class ArticleSchema(ma.Schema):

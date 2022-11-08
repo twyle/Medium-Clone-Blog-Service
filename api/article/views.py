@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """This module contains all the article routes."""
 from flasgger import swag_from
-from flask import Blueprint, request, jsonify
-# from .controller import (
-#     handle_list_articles,
-#     handle_delete_article,
-#     handle_get_article,
-#     handle_update_article
-# )
+from .controller.article import (
+    handle_create_article,
+    handle_get_article,
+    handle_update_article,
+    handle_list_articles
+)
+from flask import Blueprint, jsonify, request
 
 article = Blueprint("article", __name__)
 
@@ -18,24 +18,21 @@ article = Blueprint("article", __name__)
 @article.route("/", methods=["POST"])
 def create_article():
     """Create an article."""
-    # return handle_create_article(request.form, request.files)
-    return jsonify({'success': 'create article'})
+    return handle_create_article(request.args.get('id'), request.form, request.files) 
 
 
 @swag_from("./docs/get_article.yml", endpoint="article.get_article", methods=["GET"])
 @article.route("/", methods=["GET"])
 def get_article():
     """Get a an article by id."""
-    # return handle_get_article(request.args.get('id'))
-    return jsonify({'success': 'get article'})
+    return handle_get_article(request.args.get('id'), request.args.get('author id'))
 
 
 @swag_from("./docs/update_article.yml", endpoint="article.update_article", methods=["PUT"])
 @article.route("/", methods=["PUT"])
 def update_article():
     """Update the article with given id."""
-    # return handle_update_article(request.args.get("id"), request.form)
-    return jsonify({'success': 'update article'})
+    return handle_update_article(request.args.get("id"), request.args.get("author id"), request.form)
 
 
 @swag_from(
@@ -55,8 +52,7 @@ def delete_article():
 @article.route("/articles", methods=["GET"])
 def get_all_articles():
     """List all articles."""
-    # return handle_list_articles()
-    return jsonify({'success': 'list articles'})
+    return handle_list_articles(request.args.get("author id"))
 
 
 @swag_from(
