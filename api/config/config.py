@@ -29,6 +29,16 @@ class DevelopmentConfig(BaseConfig):
     
     TITLE_MAX_LENGTH = int(os.getenv("TITLE_MAX_LENGTH", "100"))
     TITLE_MIN_LENGTH = int(os.getenv("TITLE_MIN_LENGTH", "2"))
+    
+    S3_BUCKET = os.environ["S3_BUCKET"]
+    AWS_ACCESS_KEY = os.environ["AWS_ACCESS_KEY"]
+    AWS_ACCESS_SECRET = os.environ["AWS_ACCESS_SECRET"]
+    S3_LOCATION = f"http://{S3_BUCKET}.s3.amazonaws.com/"
+    
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+    UPLOAD_FOLDER = BASE_DIR
+    ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 
 
 Config = {

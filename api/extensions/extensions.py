@@ -4,11 +4,19 @@ from flask_sqlalchemy import SQLAlchemy
 from flasgger import LazyString, Swagger
 from flask import request
 from flask_migrate import Migrate
+import boto3
+import os
 
 db = SQLAlchemy()
 migrate = Migrate()
 ma = Marshmallow()
 cors = CORS()
+
+s3 = boto3.client(
+   "s3",
+   aws_access_key_id=os.environ['AWS_ACCESS_KEY'],
+   aws_secret_access_key=os.environ['AWS_ACCESS_SECRET']
+)
 
 swagger_template = {
     "swagger": "2.0",

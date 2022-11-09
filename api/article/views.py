@@ -46,7 +46,7 @@ def get_article():
 @article.route("/", methods=["PUT"])
 def update_article():
     """Update the article with given id."""
-    return handle_update_article(request.args.get("id"), request.args.get("author id"), request.form)
+    return handle_update_article(request.args.get("author id"), request.args.get("id"), request.form, request.files)
 
 
 @swag_from(

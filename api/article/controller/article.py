@@ -10,9 +10,10 @@ from ..models.views import View
 from ..models.bookmark import Bookmark, bookmark_schema
 from ..models.like import Like, like_schema
 from ..models.comment import Comment, comment_schema, comments_schema
+from .helpers import handle_upload_image
 
 
-def create_article(id: str, article_data: dict, pic):
+def create_article(id: str, article_data: dict, article_image):
     """Handle the post request to create a new article."""
     if not id:
         raise ValueError("The id has to be provided.")
@@ -29,6 +30,11 @@ def create_article(id: str, article_data: dict, pic):
         text=article_data["Text"],
         author=Author.get_user(int(id))
     )
+    
+    if article_image:
+        if article_image["Image"]:
+            profile_pic = handle_upload_image(article_image["Image"])
+            article.image = profile_pic
         
     db.session.add(article)
     db.session.commit()
@@ -80,7 +86,7 @@ def handle_get_article(article_id: str, author_id: str):
         return author
     
 
-def update_article(author_id: str, article_id: str, article_data: dict):
+def update_article(author_id: str, article_id: str, article_data: dict, article_image):
     """Handle the post request to create a new author."""
     if not author_id:
         raise ValueError("The author_id has to be provided.")
@@ -114,16 +120,21 @@ def update_article(author_id: str, article_id: str, article_data: dict):
     if "Text" in article_data.keys():
         Article.validate_text(article_data['Text'])
         
+    if article_image:
+        if article_image["Image"]:
+            profile_pic = handle_upload_image(article_image["Image"])
+            article.image = profile_pic
+        
     db.session.add(article)
     db.session.commit()
 
     return article_schema.dumps(article), 201
 
 
-def handle_update_article(author_id: str, article_id: str, article_data: dict):
+def handle_update_article(author_id: str, article_id: str, article_data: dict, article_image):
     """Handle the post request to create a new author."""
     try:
-        article = update_article(author_id, article_id, article_data)
+        article = update_article(author_id, article_id, article_data, article_image)
     except (ValueError, TypeError) as e:
         return jsonify({"error": str(e)}), 400
     else:
