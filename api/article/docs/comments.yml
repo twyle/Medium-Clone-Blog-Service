@@ -11,6 +11,11 @@ parameters:
     required: true
     name: 'id'
     type: 'string'
+  - in: query
+    description: The query should contain the author id
+    required: false
+    name: 'author id'
+    type: 'string'
 responses:
   200:
     description: When an Author is successfully obtained.

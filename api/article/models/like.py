@@ -14,3 +14,18 @@ class Like(db.Model):
     
     author = db.relationship("Author", backref='likes')
     article = db.relationship("Article", backref="likes")
+    
+class LikeSchema(ma.Schema):
+    """Show all the article information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = (
+            "author_id",
+            "author_id",
+            "date",
+        )
+
+like_schema = LikeSchema()
+likes_schema = LikeSchema(many=True)

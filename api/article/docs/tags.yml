@@ -1,4 +1,4 @@
-description: Get an articl's tags.
+description: Get an articles tags.
 tags:
   - Article
 produces:

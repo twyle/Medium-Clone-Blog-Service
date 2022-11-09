@@ -17,10 +17,11 @@ parameters:
     name: 'article id'
     type: 'string'
   - in: query
-    description: The query should contain the tag id
+    description: The query should contain the article tag
     required: true
-    name: 'tag id'
+    name: 'tag'
     type: 'string'
+    enum: [ "technology", "lifestyle", "health"]
 responses:
   200:
     description: When an article is successfully liked.

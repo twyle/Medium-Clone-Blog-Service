@@ -15,3 +15,18 @@ class Bookmark(db.Model):
     
     author = db.relationship("Author", backref='bookmarks')
     article = db.relationship("Article", backref="bookmarks")
+    
+class BookmarkSchema(ma.Schema):
+    """Show all the article information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = (
+            "author_id",
+            "author_id",
+            "date",
+        )
+
+bookmark_schema = BookmarkSchema()
+bookmarks_schema = BookmarkSchema(many=True)

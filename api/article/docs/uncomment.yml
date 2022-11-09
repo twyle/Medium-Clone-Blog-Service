@@ -1,4 +1,4 @@
-description: Comment on an article
+description: Delete a comment on an article
 tags:
   - Article
 produces:
@@ -12,22 +12,10 @@ parameters:
     name: 'author id'
     type: 'string'
   - in: query
-    description: The query should contain the article id
+    description: The query should contain the comment id
     required: true
-    name: 'article id'
+    name: 'comment id'
     type: 'string'
-  - name: body
-    description: The body should contain the comment.
-    in: body
-    required: true
-    schema:
-      type: object
-      required:
-        - "comment"
-      properties:
-        comment:
-          type: "string"
-          example: "Such a fantastic article on male reproductive health."
 responses:
   200:
     description: When an article is successfully liked.
