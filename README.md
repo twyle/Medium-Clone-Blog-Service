@@ -20,7 +20,7 @@
   <img title="Bandit badge" alt="Bandit badge" src="https://img.shields.io/badge/gunicorn-%298729.svg?style=flat&logo=gunicorn&logoColor=white" />
 </p>
 
-<img src="assets/images/medium_clone_user_management_system.png" class="img-responsive" alt="">
+<img src="assets/images/medium_clone_blog_service.png" class="img-responsive" alt="">
 
 ## Project Overview
 This is a web application that enables an author to create, view, uupdate and delete blog posts. Other functionalities include:
