@@ -3,6 +3,8 @@ tags:
   - Article
 produces:
   - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
 parameters:
   - in: query
     description: The query should contain the author id

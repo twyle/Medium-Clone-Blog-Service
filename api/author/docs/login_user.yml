@@ -17,15 +17,10 @@ parameters:
       type: object
       required:
         - "email"
-        - "password"
       properties:
         email:
           type: "email"
           example: "lyle@gmail.com"
-        password:
-          type: "string"
-          format: password
-          example: "********"
 responses:
   201:
     description: When a user succesfully logs in.

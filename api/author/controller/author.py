@@ -1,14 +1,16 @@
-from .helper import validate_user_data
+from .helper import validate_author_data
 from ..models.author import Author, author_schema, authors_schema
 from ...extensions import db
-from flask import jsonify
+from flask import jsonify, current_app
 from ...article.models.article import Article
+import json
+from flask_jwt_extended import create_access_token
 
 
 def create_author(author_data: dict):
     """Handle the post request to create a new author."""
     
-    validate_user_data(author_data)
+    validate_author_data(author_data)
     
     Author.validate_name(author_data['Name'])
     Author.validate_email(author_data['Email Address'])
@@ -35,6 +37,54 @@ def handle_create_author(author_data: dict):
         return jsonify({"error": str(e)}), 400
     else:
         return author
+    
+
+def log_in_author(author_id: str, author_data: dict):
+    """Log in a registered user."""
+    if not author_id:
+        raise ValueError(f"The authorid has to be provided!")
+    if not isinstance(author_id, str):
+        raise TypeError(f"The authorid has to be a string")
+    if not author_data:
+        raise ValueError(f"The authordata cannot be empty.")
+    if not isinstance(author_data, dict):
+        raise TypeError("author_data must be a dict")
+    if "email" not in author_data.keys():
+        raise ValueError(f"The email is missing from the authordata")
+    if not author_data["email"]:
+        raise ValueError(f"The email data for authoris missing")
+    if not Author.user_with_email_exists(author_data["email"]):
+        raise ValueError(
+            f'The authorwith email {author_data["email"]} does not exist!'
+        )
+    if not Author.validate_user(int(author_id), author_data["email"]):
+        raise ValueError(
+            f'The authorwith email {author_data["email"]} and id {author_id} does not exist!'
+        )
+
+    author = Author.query.filter_by(email_address=author_data["email"]).first()
+    if author:
+        access_token = create_access_token(identity=author.id)
+        author_data = {
+            f"authorprofile": json.loads(author_schema.dumps(author)),
+            "access token": access_token,
+        }
+
+        return author_data
+
+
+def handle_log_in_author(author_id: str, author_data: dict) -> dict:
+    """Handle a POST request to log in an admin."""
+    try:
+        data = log_in_author(author_id, author_data)
+    except (
+        ValueError,
+        TypeError
+    ) as e:
+        return jsonify({"error": str(e)}), 400
+    else:
+        return data, 200
+
     
 def get_author(author_id: str) -> dict:
     """Get the user with the given id."""
@@ -88,7 +138,7 @@ def update_author(author_id: str, author_data: dict):
     if not Author.user_with_id_exists(int(author_id)):
         raise ValueError(f"The user with id {author_id} does not exist.")
     if not isinstance(author_data, dict):
-        raise TypeError("user_data must be a dict")
+        raise TypeError("author_data must be a dict")
     valid_keys = [
         "Name",
         "Email Address",
@@ -269,3 +319,8 @@ def handle_author_stats(author_id: str):
         return jsonify({"error": str(e)}), 400
     else:
         return stats
+
+
+def handle_refresh_token(identity) -> dict:
+    """Generate a new access token."""
+    return jsonify(access_token=create_access_token(identity=identity)), 200

@@ -11,6 +11,8 @@ from ..models.bookmark import Bookmark, bookmark_schema
 from ..models.like import Like, like_schema
 from ..models.comment import Comment, comment_schema, comments_schema
 from .helpers import handle_upload_image
+from ...tasks import delete_file_s3
+import os
 
 
 def create_article(id: str, article_data: dict, article_image):
@@ -122,6 +124,8 @@ def update_article(author_id: str, article_id: str, article_data: dict, article_
         
     if article_image:
         if article_image["Image"]:
+            if article.image:
+                delete_file_s3(os.path.basename(article.image))
             profile_pic = handle_upload_image(article_image["Image"])
             article.image = profile_pic
         
@@ -129,6 +133,26 @@ def update_article(author_id: str, article_id: str, article_data: dict, article_
     db.session.commit()
 
     return article_schema.dumps(article), 201
+
+
+def delete_article(article_id: str):
+    """Delete an article."""
+    if not article_id:
+        raise ValueError('The article id has to be provided')
+    if not isinstance(article_id, str):
+        raise TypeError('The article id has to be a string')
+    if not Article.article_with_id_exists(int(article_id)):
+        raise ValueError(f'Their is no article with id {article_id}')
+    return article_schema.dump(Article.delete_article(int(article_id))), 200
+
+def handle_delete_article(article_id: str):
+    """List all authors."""
+    try:
+        deleted_article = delete_article(article_id)
+    except (ValueError, TypeError) as e:
+        return jsonify({'error': str(e)})
+    else:
+        return deleted_article
 
 
 def handle_update_article(author_id: str, article_id: str, article_data: dict, article_image):

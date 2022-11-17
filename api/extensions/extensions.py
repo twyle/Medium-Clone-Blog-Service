@@ -6,11 +6,13 @@ from flask import request
 from flask_migrate import Migrate
 import boto3
 import os
+from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
 migrate = Migrate()
 ma = Marshmallow()
 cors = CORS()
+jwt = JWTManager()
 
 s3 = boto3.client(
    "s3",

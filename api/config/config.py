@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+from datetime import timedelta
 
 load_dotenv()
 
@@ -8,6 +9,7 @@ class BaseConfig:
     """Base configuration."""
     DEBUG = True
     TESTING = False
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'secret-key')
     
     POSTGRES_HOST = os.environ["POSTGRES_HOST"]
     POSTGRES_DB = os.environ["POSTGRES_DB"]
@@ -18,6 +20,7 @@ class BaseConfig:
     db_conn_string = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
     SQLALCHEMY_DATABASE_URI = db_conn_string
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
     
 class DevelopmentConfig(BaseConfig):
     """Development confuguration."""
@@ -39,6 +42,14 @@ class DevelopmentConfig(BaseConfig):
 
     UPLOAD_FOLDER = BASE_DIR
     ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
+    
+    JWT_SECRET_KEY = "super-secret-key"
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(
+        hours=int(os.getenv("JWT_ACCESS_TOKEN_EXPIRES", "24"))
+    )
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(
+        days=int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES", "7"))
+    )
 
 
 Config = {

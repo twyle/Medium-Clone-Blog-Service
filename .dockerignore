@@ -1,0 +1,8 @@
+venv
+.env
+assets/
+database/
+docker*
+LICENSE
+Makefile
+README.md

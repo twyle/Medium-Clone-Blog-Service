@@ -3,6 +3,8 @@ from datetime import datetime
 from sqlalchemy.dialects.postgresql import ARRAY
 from dataclasses import dataclass
 from flask import current_app
+import os
+from ...tasks import delete_file_s3
 
 
 @dataclass
@@ -69,6 +71,18 @@ class Article(db.Model):
         if author_id:
             return Article.query.filter_by(author_id=author_id)
         return Article.query.all()
+    
+    
+    @staticmethod  
+    def delete_article(article_id: int):
+        """Delete an article."""
+        article = Article.query.filter_by(id=article_id).first()
+        if article.image:
+            # delete_file_s3.delay(os.path.basename(author.profile_picture))
+            delete_file_s3(os.path.basename(article.image))
+        db.session.delete(article)
+        db.session.commit()
+        return article
     
 
 class ArticleSchema(ma.Schema):

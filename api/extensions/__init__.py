@@ -4,7 +4,8 @@ from .extensions import (
     migrate,
     cors,
     swagger,
-    s3
+    s3,
+    jwt
 )
 
 __all__ = [
@@ -13,5 +14,6 @@ __all__ = [
     'migrate',
     'cors',
     'swagger',
-    's3'
+    's3',
+    'jwt'
 ]

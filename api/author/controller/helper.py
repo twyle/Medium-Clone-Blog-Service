@@ -1,7 +1,7 @@
 import re
 
 
-def validate_user_data(user_data):
+def validate_author_data(user_data):
     """Validate user data."""
     if not user_data:
         raise ValueError("The authors data must be provided!")

@@ -56,7 +56,7 @@ class Author(db.Model):
     
     
     @staticmethod   
-    def validate_user(user_id, email):
+    def validate_user(id, email):
         """Check if user id and email belong to the same person."""
         if not id:
             raise ValueError("The user id has to be provided!")
@@ -106,7 +106,7 @@ class AuthorSchema(ma.Schema):
         fields = (
             "id",
             "name",
-            "email",
+            "email_address",
         )
 
 author_schema = AuthorSchema()
