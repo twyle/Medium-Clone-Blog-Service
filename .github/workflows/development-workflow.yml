@@ -164,6 +164,6 @@ jobs:
 
     - name: Test application
       run: |
-        python ./services/web/manage.py run &
+        python manage.py run &
         sleep 10
         curl http://127.0.0.1:5000/
