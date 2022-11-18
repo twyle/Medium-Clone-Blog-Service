@@ -8,8 +8,9 @@ from .helpers.hooks import log_get_request, log_post_request, get_response, get_
 from .config.logger import app_logger
 from .helpers.error_handlers import register_error_handlers
 from .helpers.http_status_codes import HTTP_200_OK
+import os
 
-def create_app(config_name='testing'):
+def create_app(config_name=os.environ.get('FLASK_ENV', 'development')):
     """Create the Flask app instance."""
     app = Flask(__name__)
     

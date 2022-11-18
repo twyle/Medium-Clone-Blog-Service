@@ -182,5 +182,5 @@ Config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
-    'default': DevelopmentConfig
+    'staging': ProductionConfig
 }
