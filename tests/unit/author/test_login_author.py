@@ -3,6 +3,7 @@ from api import db
 from api import create_app
 from api.author.models.author import Author
 import pytest
+import json
 
     
 def test_login_author():
@@ -74,3 +75,28 @@ def test_login_author_non_string_id():
         
         db.session.delete(created_author)
         db.session.commit()
+        
+#Test validate_user
+#Test wrong credentials, wrong ids,emails
+        
+        
+def test_login_route(client):
+    author = Author(
+        name='Lyle',
+        email_address='lyle9@gmail.com'
+    )
+    with create_app().app_context():
+        db.session.add(author)
+        db.session.commit()
+        
+        created_author = Author.query.filter_by(email_address=author.email_address).first()
+        response = client.post('/author/login', query_string={'id': str(author.id)},
+                            json={'email': created_author.email_address})
+        assert response.status_code == 200
+        response_data = json.loads(response.text)
+        assert 'access token' in response_data
+        assert 'refresh token' in response_data
+        assert 'author profile' in response_data
+
+    db.session.delete(created_author)
+    db.session.commit()

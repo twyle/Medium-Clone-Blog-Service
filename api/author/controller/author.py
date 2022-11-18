@@ -11,7 +11,8 @@ from ...helpers.http_status_codes import (
     HTTP_409_CONFLICT
 )
 from ...helpers.exceptions import (
-    AuthorExists
+    AuthorExists,
+    AuthorDoesNotExist
 )
 
 
@@ -64,11 +65,11 @@ def log_in_author(author_id: str, author_data: dict):
     if not author_data["email"]:
         raise ValueError(f"The email data for authoris missing")
     if not Author.user_with_email_exists(author_data["email"]):
-        raise ValueError(
-            f'The authorwith email {author_data["email"]} does not exist!'
+        raise AuthorDoesNotExist(
+            f'The author with email {author_data["email"]} does not exist!'
         )
     if not Author.validate_user(int(author_id), author_data["email"]):
-        raise ValueError(
+        raise AuthorDoesNotExist(
             f'The authorwith email {author_data["email"]} and id {author_id} does not exist!'
         )
 
