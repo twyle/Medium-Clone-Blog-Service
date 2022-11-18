@@ -1,13 +1,13 @@
 # Medium Clone Blog Service
 
-> A standalone service for managing blog articles. This includes the creation, update, viewing and deletetion of articles.  
+> A standalone service for managing blog articles. This includes the creation, update, viewing and deletetion of articles.   
 
 <p align="center">
-  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/user-management-service/actions/workflows/feature-development-workflow.yml/badge.svg" />
-  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/user-management-service/actions/workflows/development-workflow.yml/badge.svg" />
-  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/user-management-service/actions/workflows/staging-workflow.yml/badge.svg" />
-  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/user-management-service/actions/workflows/release-workflow.yml/badge.svg" />
-  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/user-management-service/actions/workflows/production-workflow.yml/badge.svg" />
+  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/Medium-Clone-Blog-Service/actions/workflows/feature-development-workflow.yml/badge.svg" />
+  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/Medium-Clone-Blog-Service/actions/workflows/development-workflow.yml/badge.svg" />
+  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/Medium-Clone-Blog-Service/actions/workflows/staging-workflow.yml/badge.svg" />
+  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/Medium-Clone-Blog-Service/actions/workflows/release-workflow.yml/badge.svg" />
+  <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/Medium-Clone-Blog-Service/actions/workflows/production-workflow.yml/badge.svg" />
   <img title="Bandit badge" alt="Bandit badge" src="https://img.shields.io/badge/security-bandit-yellow.svg" />
   <img title="Bandit badge" alt="Bandit badge" src="https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336" />
   <img title="Bandit badge" alt="Bandit badge" src="https://img.shields.io/badge/Made%20with- Python-1f425f.svg" />
