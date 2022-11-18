@@ -1,6 +1,6 @@
 # Medium Clone Blog Service
 
-> A standalone service for managing blog articles. This includes the creation, update, viewing and deletetion of articles.   
+> A standalone service for managing blog articles. This includes the creation, update, viewing and deletetion of articles.  
 
 <p align="center">
   <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/user-management-service/actions/workflows/feature-development-workflow.yml/badge.svg" />
