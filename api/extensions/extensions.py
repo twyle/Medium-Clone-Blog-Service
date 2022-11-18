@@ -64,3 +64,4 @@ swagger_config = {
 }
 
 swagger = Swagger(template=swagger_template, config=swagger_config)
+

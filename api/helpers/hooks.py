@@ -1,5 +1,5 @@
 from flask import request
-from ..config import app_logger
+from ..config.logger import app_logger
 from flask import request
 import json
 
@@ -57,7 +57,7 @@ def get_response(response):
         'response': json.loads(response.data)
     }
     app_logger.info(str(response_data))
-    
+
     
 def get_exception(exc):
     """Log exceptions"""

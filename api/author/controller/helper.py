@@ -20,7 +20,10 @@ def validate_author_data(user_data):
     if "Email Address" not in user_data.keys():
         raise ValueError("The Emai address must be provide!")
     if not user_data["Email Address"]:
-        raise ValueError("The Email address must be provide!")
+        raise ValueError("The Email address must be provided!")
+    if not user_data["Name"]:
+        raise ValueError("The Name must be provided!")
+    return True
     
 
 def is_email_address_format_valid(email_address: str) -> bool:

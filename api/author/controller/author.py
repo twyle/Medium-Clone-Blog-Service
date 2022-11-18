@@ -4,7 +4,15 @@ from ...extensions import db
 from flask import jsonify, current_app
 from ...article.models.article import Article
 import json
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
+from ...helpers.http_status_codes import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_409_CONFLICT
+)
+from ...helpers.exceptions import (
+    AuthorExists
+)
 
 
 def create_author(author_data: dict):
@@ -16,7 +24,7 @@ def create_author(author_data: dict):
     Author.validate_email(author_data['Email Address'])
         
     if Author.user_with_email_exists(author_data["Email Address"]):
-        raise ValueError(f'The user with email address {author_data["Email Address"]} exists')
+        raise AuthorExists(f'The author with email address {author_data["Email Address"]} exists')
     
     author = Author(
         name=author_data["Name"],
@@ -26,7 +34,7 @@ def create_author(author_data: dict):
     db.session.add(author)
     db.session.commit()
 
-    return author_schema.dumps(author), 201
+    return author_schema.dumps(author), HTTP_201_CREATED
 
 
 def handle_create_author(author_data: dict):
@@ -35,6 +43,8 @@ def handle_create_author(author_data: dict):
         author = create_author(author_data)
     except (ValueError, TypeError) as e:
         return jsonify({"error": str(e)}), 400
+    except AuthorExists as e:
+        return jsonify({"error": str(e)}), HTTP_409_CONFLICT
     else:
         return author
     
@@ -46,7 +56,7 @@ def log_in_author(author_id: str, author_data: dict):
     if not isinstance(author_id, str):
         raise TypeError(f"The authorid has to be a string")
     if not author_data:
-        raise ValueError(f"The authordata cannot be empty.")
+        raise ValueError(f"The author data cannot be empty.")
     if not isinstance(author_data, dict):
         raise TypeError("author_data must be a dict")
     if "email" not in author_data.keys():
@@ -65,12 +75,14 @@ def log_in_author(author_id: str, author_data: dict):
     author = Author.query.filter_by(email_address=author_data["email"]).first()
     if author:
         access_token = create_access_token(identity=author.id)
+        refresh_token = create_refresh_token(identity=author.id)
         author_data = {
-            f"authorprofile": json.loads(author_schema.dumps(author)),
-            "access token": access_token,
+            'author profile': json.loads(author_schema.dumps(author)),
+            'access token': access_token,
+            'refresh token': refresh_token
         }
 
-        return author_data
+        return author_data, HTTP_200_OK
 
 
 def handle_log_in_author(author_id: str, author_data: dict) -> dict:
@@ -83,7 +95,7 @@ def handle_log_in_author(author_id: str, author_data: dict) -> dict:
     ) as e:
         return jsonify({"error": str(e)}), 400
     else:
-        return data, 200
+        return data
 
     
 def get_author(author_id: str) -> dict:
@@ -176,7 +188,7 @@ def handle_update_author(author_id: str, author_data: dict):
 
 def handle_list_authors():
     """List all authors."""
-    return authors_schema.dump(Author.all_users()), 200
+    return authors_schema.dump(Author.query.all()), HTTP_200_OK
 
 
 def articles_published(author_id: str):

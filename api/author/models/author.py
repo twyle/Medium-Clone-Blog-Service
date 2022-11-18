@@ -34,7 +34,7 @@ class Author(db.Model):
             raise ValueError("The user_name has to be provided.")
 
         if not isinstance(user_name, str):
-            raise ValueError("The user_name has to be string")
+            raise TypeError("The user_name has to be string")
 
         if len(user_name) >= current_app.config["NAME_MAX_LENGTH"]:
             raise ValueError(

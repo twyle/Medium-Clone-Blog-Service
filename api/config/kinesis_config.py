@@ -24,8 +24,8 @@ class KinesisFirehoseDeliveryStreamHandler(logging.StreamHandler):
 
         self.__firehose = None
         self.__stream_buffer = []
-        self.__aws_key = os.environ['AWS_KEY']
-        self.__aws_secret = os.environ['AWS_SECRET']
+        self.__aws_key = os.environ['AWS_ACCESS_KEY']
+        self.__aws_secret = os.environ['AWS_ACCESS_SECRET']
         self.__aws_region = os.environ['AWS_REGION']
 
         try:

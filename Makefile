@@ -39,13 +39,16 @@ seed-db:
 
 test-local:
 	@curl localhost
-	@curl localhost:5000/users
 
 build:
-	@docker build -t flask-ebs-pipeline-containerized .
+	@docker build -t blog-service:latest .
 
 run-dev:
-	@docker run -p5000:5000 --env-file=./.env flask-ebs-pipeline-containerized:latest
+	@docker run -p5000:5000 --env-file=./.env blog-service:latest
 
 stop-dev:
-	@sudo docker-compose -f docker-compose-dev.yml down
+	@docker-compose -f docker-compose-dev.yml down
+
+coverage:
+	@coverage run -m pytest 
+	@coverage report -m
