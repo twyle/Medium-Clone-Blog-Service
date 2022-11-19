@@ -57,3 +57,4 @@ lint:
 	@isort .
 	@black .
 	@flake8
+	@pylint --rcfile=.pylintrc ./api

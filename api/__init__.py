@@ -24,7 +24,7 @@ def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
     app.config.from_object(Config[config_name])
     try:
         check_configuration()
-    except Exception as e:
+    except ValueError as e:
         app_logger.critical(str(e))
         sys.exit(1)
 
