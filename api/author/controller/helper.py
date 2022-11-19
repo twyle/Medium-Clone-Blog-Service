@@ -24,7 +24,7 @@ def validate_author_data(user_data):
     if not user_data["Name"]:
         raise ValueError("The Name must be provided!")
     return True
-    
+
 
 def is_email_address_format_valid(email_address: str) -> bool:
     """Check that the email address format is valid."""
@@ -40,4 +40,3 @@ def is_email_address_format_valid(email_address: str) -> bool:
     if re.fullmatch(regex, email_address):
         return True
     return False
-

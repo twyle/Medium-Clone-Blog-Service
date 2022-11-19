@@ -1,5 +1,3 @@
 from .views import author
 
-__all__ = [
-    'author'
-]
+__all__ = ["author"]

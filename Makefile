@@ -52,3 +52,8 @@ stop-dev:
 coverage:
 	@coverage run -m pytest 
 	@coverage report -m
+
+lint:
+	@isort .
+	@black .
+	@flake8

@@ -24,21 +24,21 @@ class KinesisFirehoseDeliveryStreamHandler(logging.StreamHandler):
 
         self.__firehose = None
         self.__stream_buffer = []
-        self.__aws_key = os.environ['AWS_ACCESS_KEY']
-        self.__aws_secret = os.environ['AWS_ACCESS_SECRET']
-        self.__aws_region = os.environ['AWS_REGION']
+        self.__aws_key = os.environ["AWS_ACCESS_KEY"]
+        self.__aws_secret = os.environ["AWS_ACCESS_SECRET"]
+        self.__aws_region = os.environ["AWS_REGION"]
 
         try:
             self.__firehose = boto3.client(
-                'firehose',
+                "firehose",
                 aws_access_key_id=self.__aws_key,
                 aws_secret_access_key=self.__aws_secret,
-                region_name=self.__aws_region
+                region_name=self.__aws_region,
             )
         except Exception:
-            print('Firehose client initialization failed.')
+            print("Firehose client initialization failed.")
 
-        self.__delivery_stream_name = os.environ['FIREHOSE_DELIVERY_STREAM']
+        self.__delivery_stream_name = os.environ["FIREHOSE_DELIVERY_STREAM"]
 
     def emit(self, record):
         """Send the formatted log to AWS Firehose."""
@@ -46,9 +46,9 @@ class KinesisFirehoseDeliveryStreamHandler(logging.StreamHandler):
             msg = self.format(record)
 
             if self.__firehose:
-                self.__stream_buffer.append({
-                    'Data': msg.encode(encoding="UTF-8", errors="strict")
-                })
+                self.__stream_buffer.append(
+                    {"Data": msg.encode(encoding="UTF-8", errors="strict")}
+                )
             else:
                 stream = self.stream
                 stream.write(msg)
@@ -66,7 +66,7 @@ class KinesisFirehoseDeliveryStreamHandler(logging.StreamHandler):
             if self.__firehose and self.__stream_buffer:
                 self.__firehose.put_record_batch(
                     DeliveryStreamName=self.__delivery_stream_name,
-                    Records=self.__stream_buffer
+                    Records=self.__stream_buffer,
                 )
 
                 self.__stream_buffer.clear()
@@ -88,12 +88,12 @@ class CustomEmailLogger(logging.Handler):
         """Initialize the logger."""
         logging.Handler.__init__(self)
         self.mailport = 465
-        self.mailhost = os.environ['MAIL_HOST']
-        self.fromaddr = 'lyceokoth@gmail.com'
-        self.toaddrs = 'lyceokoth@gmail.com'
-        self.username = os.environ['MAIL_USERNAME']
-        self.password = os.environ['MAIL_PASSWORD']
-        self.sender_name = 'Lyle from Amazon'
+        self.mailhost = os.environ["MAIL_HOST"]
+        self.fromaddr = "lyceokoth@gmail.com"
+        self.toaddrs = "lyceokoth@gmail.com"
+        self.username = os.environ["MAIL_USERNAME"]
+        self.password = os.environ["MAIL_PASSWORD"]
+        self.sender_name = "Lyle from Amazon"
 
     def emit(self, record):
         """
@@ -105,9 +105,9 @@ class CustomEmailLogger(logging.Handler):
             log_record = json.loads(self.format(record))
 
             # Try to send the message.
-            if log_record['levelname'] in ['CRITICAL']:
+            if log_record["levelname"] in ["CRITICAL"]:
                 with SMTP_SSL(self.mailhost, self.mailport) as server:
-                    SUBJECT = log_record['levelname']
+                    SUBJECT = log_record["levelname"]
                     BODY_HTML = f"""
                     <html>
                         <head>
@@ -121,12 +121,12 @@ class CustomEmailLogger(logging.Handler):
                             </p>
                         </body>
                     </html>"""
-                    msg = MIMEMultipart('alternative')
-                    msg['Subject'] = SUBJECT
-                    msg['From'] = formataddr((self.sender_name, self.fromaddr))
-                    msg['To'] = self.toaddrs
+                    msg = MIMEMultipart("alternative")
+                    msg["Subject"] = SUBJECT
+                    msg["From"] = formataddr((self.sender_name, self.fromaddr))
+                    msg["To"] = self.toaddrs
 
-                    part2 = MIMEText(BODY_HTML, 'html')
+                    part2 = MIMEText(BODY_HTML, "html")
 
                     msg.attach(part2)
                     server.login(self.username, self.password)

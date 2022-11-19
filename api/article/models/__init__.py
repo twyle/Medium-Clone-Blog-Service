@@ -5,11 +5,4 @@ from .like import Like
 from .share import Share
 from .views import View
 
-__all__ = [
-    'Article',
-    'Bookmark',
-    'Comment',
-    'Like',
-    'Share',
-    'View'
-]
+__all__ = ["Article", "Bookmark", "Comment", "Like", "Share", "View"]

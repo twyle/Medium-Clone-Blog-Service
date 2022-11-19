@@ -1,6 +1,8 @@
+import os
+
 from flask import current_app
 from werkzeug.utils import secure_filename
-import os
+
 from ...tasks import upload_file_to_s3
 
 
@@ -20,7 +22,7 @@ def upload_image(file):
         raise TypeError("That file type is not allowed!")
 
     filename = secure_filename(file.filename)
-    file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+    file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
 
     # upload_file_to_s3.delay(filename)
     upload_file_to_s3(filename)
@@ -40,7 +42,7 @@ def handle_upload_image(file):
         raise e
     else:
         return profile_pic
-    
+
 
 def validate_article_data(article_data):
     """Validate article data."""

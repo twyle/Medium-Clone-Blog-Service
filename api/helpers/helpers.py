@@ -1,17 +1,12 @@
-from ..extensions import (
-    db,
-    ma,
-    migrate,
-    cors,
-    swagger,
-    jwt
-)
-from flasgger import LazyJSONEncoder
-from ..author import author
-from ..article import article
-from sqlalchemy_utils import database_exists
 import os
 import sys
+
+from flasgger import LazyJSONEncoder
+from sqlalchemy_utils import database_exists
+
+from ..article import article
+from ..author import author
+from ..extensions import cors, db, jwt, ma, migrate, swagger
 
 
 def register_extensions(app):
@@ -23,12 +18,12 @@ def register_extensions(app):
     cors.init_app(app)
     swagger.init_app(app)
     jwt.init_app(app)
-    
+
 
 def register_blueprints(app):
-    app.register_blueprint(author, url_prefix='/author')
-    app.register_blueprint(article, url_prefix='/article')
-    
+    app.register_blueprint(author, url_prefix="/author")
+    app.register_blueprint(article, url_prefix="/article")
+
 
 def create_db_conn_string() -> str:
     """Create the database connection string.
@@ -41,11 +36,11 @@ def create_db_conn_string() -> str:
         The database connection string
     """
 
-    POSTGRES_HOST = os.environ['POSTGRES_HOST']
-    POSTGRES_PORT = os.environ['POSTGRES_PORT']
-    POSTGRES_USER = os.environ['POSTGRES_USER']
-    POSTGRES_PASSWORD = os.environ['POSTGRES_PASSWORD']
-    POSTGRES_DB = os.environ['POSTGRES_DB']
+    POSTGRES_HOST = os.environ["POSTGRES_HOST"]
+    POSTGRES_PORT = os.environ["POSTGRES_PORT"]
+    POSTGRES_USER = os.environ["POSTGRES_USER"]
+    POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
+    POSTGRES_DB = os.environ["POSTGRES_DB"]
 
     return f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
@@ -71,10 +66,10 @@ def check_if_database_exists(db_connection_string: str) -> bool:
         True if database exists or False if it does not
     """
     if not db_connection_string:
-        raise ValueError('The db_connection_string cannot be a null value.')
+        raise ValueError("The db_connection_string cannot be a null value.")
 
     if not isinstance(db_connection_string, str):
-        raise ValueError('The db_connection_string has to be string')
+        raise ValueError("The db_connection_string has to be string")
 
     db_exists = database_exists(db_connection_string)
 
@@ -83,6 +78,6 @@ def check_if_database_exists(db_connection_string: str) -> bool:
 
 def check_configuration():
     """Check if all the configs are set."""
-    #Check database connection
+    # Check database connection
     if not check_if_database_exists(create_db_conn_string()):
-        raise ValueError('The database is not connected!')
+        raise ValueError("The database is not connected!")

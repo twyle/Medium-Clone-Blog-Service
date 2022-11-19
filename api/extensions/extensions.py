@@ -1,12 +1,13 @@
-from flask_cors import CORS
-from flask_marshmallow import Marshmallow
-from flask_sqlalchemy import SQLAlchemy
+import os
+
+import boto3
 from flasgger import LazyString, Swagger
 from flask import request
-from flask_migrate import Migrate
-import boto3
-import os
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -15,9 +16,9 @@ cors = CORS()
 jwt = JWTManager()
 
 s3 = boto3.client(
-   "s3",
-   aws_access_key_id=os.environ['AWS_ACCESS_KEY'],
-   aws_secret_access_key=os.environ['AWS_ACCESS_SECRET']
+    "s3",
+    aws_access_key_id=os.environ["AWS_ACCESS_KEY"],
+    aws_secret_access_key=os.environ["AWS_ACCESS_SECRET"],
 )
 
 swagger_template = {
@@ -64,4 +65,3 @@ swagger_config = {
 }
 
 swagger = Swagger(template=swagger_template, config=swagger_config)
-

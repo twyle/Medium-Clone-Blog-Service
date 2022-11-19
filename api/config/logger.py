@@ -1,7 +1,8 @@
 import logging.config
+import os
+
 import boto3
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
@@ -16,21 +17,21 @@ class KinesisFirehoseDeliveryStreamHandler(logging.StreamHandler):
 
         self.__firehose = None
         self.__stream_buffer = []
-        self.__aws_key = os.environ['AWS_ACCESS_KEY']
-        self.__aws_secret = os.environ['AWS_ACCESS_SECRET']
-        self.__aws_region = os.environ['AWS_REGION']
+        self.__aws_key = os.environ["AWS_ACCESS_KEY"]
+        self.__aws_secret = os.environ["AWS_ACCESS_SECRET"]
+        self.__aws_region = os.environ["AWS_REGION"]
 
         try:
             self.__firehose = boto3.client(
-                'firehose',
+                "firehose",
                 aws_access_key_id=self.__aws_key,
                 aws_secret_access_key=self.__aws_secret,
-                region_name=self.__aws_region
+                region_name=self.__aws_region,
             )
         except Exception:
-            print('Firehose client initialization failed.')
+            print("Firehose client initialization failed.")
 
-        self.__delivery_stream_name = os.environ['FIREHOSE_DELIVERY_STREAM']
+        self.__delivery_stream_name = os.environ["FIREHOSE_DELIVERY_STREAM"]
 
     def emit(self, record):
         """Send the formatted log to AWS Firehose."""
@@ -38,9 +39,9 @@ class KinesisFirehoseDeliveryStreamHandler(logging.StreamHandler):
             msg = self.format(record)
 
             if self.__firehose:
-                self.__stream_buffer.append({
-                    'Data': msg.encode(encoding="UTF-8", errors="strict")
-                })
+                self.__stream_buffer.append(
+                    {"Data": msg.encode(encoding="UTF-8", errors="strict")}
+                )
             else:
                 stream = self.stream
                 stream.write(msg)
@@ -58,7 +59,7 @@ class KinesisFirehoseDeliveryStreamHandler(logging.StreamHandler):
             if self.__firehose and self.__stream_buffer:
                 self.__firehose.put_record_batch(
                     DeliveryStreamName=self.__delivery_stream_name,
-                    Records=self.__stream_buffer
+                    Records=self.__stream_buffer,
                 )
 
                 self.__stream_buffer.clear()
@@ -86,7 +87,7 @@ def create_dev_logger():
             "json": {
                 "format": "%(asctime)s %(name)s %(levelname)s %(message)s",
                 "datefmt": "%Y-%m-%dT%H:%M:%S%z",
-                "class": "pythonjsonlogger.jsonlogger.JsonFormatter"
+                "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
             },
         },
         "handlers": {
@@ -95,12 +96,7 @@ def create_dev_logger():
                 "formatter": "json",
             },
         },
-        "loggers": {
-            "": {
-                "handlers": ["standard"],
-                "level": logging.INFO
-            }
-        }
+        "loggers": {"": {"handlers": ["standard"], "level": logging.INFO}},
     }
 
     logging.config.dictConfig(config)
@@ -123,7 +119,7 @@ def create_prod_logger():
             "json": {
                 "format": "%(asctime)s %(name)s %(levelname)s %(message)s",
                 "datefmt": "%Y-%m-%dT%H:%M:%S%z",
-                "class": "pythonjsonlogger.jsonlogger.JsonFormatter"
+                "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
             },
         },
         "handlers": {
@@ -133,15 +129,10 @@ def create_prod_logger():
             },
             "kinesis": {
                 "class": "api.config.kinesis_config.KinesisFirehoseDeliveryStreamHandler",
-                "formatter": "json"
+                "formatter": "json",
             },
         },
-        "loggers": {
-            "": {
-                "handlers": ["kinesis"],
-                "level": logging.INFO
-            }
-        }
+        "loggers": {"": {"handlers": ["kinesis"], "level": logging.INFO}},
     }
 
     logging.config.dictConfig(config)
@@ -151,12 +142,11 @@ def create_prod_logger():
     return logger
 
 
-def create_logger(env='development'):
+def create_logger(env="development"):
     app_logger = create_dev_logger()
-    if env == 'production':
+    if env == "production":
         app_logger = create_prod_logger()
     return app_logger
-        
 
 
 app_logger = create_logger()

@@ -1,7 +1,7 @@
 from functools import wraps
-from flask import request, make_response, jsonify,current_app
-import jwt
 
+import jwt
+from flask import current_app, jsonify, make_response, request
 
 # Authentication decorator
 # def token_required(f):
@@ -22,12 +22,13 @@ import jwt
 #         return f(*args, **kwargs)
 #     return decorator
 
+
 def token_required(fn):
     def wrapper(fn):
-            @wraps(fn)
-            def decorator(*args, **kwargs):
-                print('Hello')
+        @wraps(fn)
+        def decorator(*args, **kwargs):
+            print("Hello")
 
-            return decorator
+        return decorator
 
     return wrapper
