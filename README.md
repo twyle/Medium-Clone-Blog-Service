@@ -207,6 +207,10 @@ Here is how to set up the application locally:
 
       The application uses JSON Web Tokens to authorize access to protected routes. The passwords are also encrypted.
 
+## Development
+
+The application is containerzed and deployed to AWS beanstalk.
+[Deployed application](http://blog-service-dev.techwithlyle.xyz/apidocs/)
   ## Contribution
 
 1. Fork it https://github.com/twyle/repo-template/fork
