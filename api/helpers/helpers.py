@@ -3,7 +3,7 @@ import os
 from flasgger import LazyJSONEncoder
 from sqlalchemy_utils import database_exists
 
-from ..article import article
+from ..article.views import article
 from ..author import author
 from ..extensions import cors, db, jwt, ma, migrate, swagger
 
