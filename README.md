@@ -23,12 +23,13 @@
 <img src="assets/images/medium_clone_blog_service.png" class="img-responsive" alt="">
 
 ## Project Overview
-This is a web application that enables an author to create, view, uupdate and delete blog posts. Other functionalities include:
+This is a web application that enables an author to create, view, update and delete blog posts. Other functionalities include:
 1. Commenting on posts
 2. Liking posts
 3. Bookmarking posts
 4. Reporting posts
 5. Stats for a given post and author.
+The application is deployed to AWS Beanstalk and uses Postgres to store user data and articles, AWS S3 to store images and an AWS SQS queue to upload images to S3 using Lambda function.
 
 ## Working 
 
@@ -207,7 +208,7 @@ Here is how to set up the application locally:
 
       The application uses JSON Web Tokens to authorize access to protected routes. The passwords are also encrypted.
 
-## Development
+## Deployment
 
 The application is containerzed and deployed to AWS beanstalk.
 [Deployed application](http://blog-service-dev.techwithlyle.xyz/apidocs/)
