@@ -15,6 +15,7 @@ from .helpers.hooks import (
     log_post_request,
 )
 from .helpers.http_status_codes import HTTP_200_OK
+from .article.controller.helpers import handle_get_image, handle_delete_image
 
 
 def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
@@ -65,6 +66,15 @@ def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
     @app.route("/")
     def health_check():
         return jsonify({"success": "hello from flask"}), HTTP_200_OK
+    
+    @app.route("/image")
+    def get_image():
+        return handle_get_image(request.args.get('filename'))
+    
+    
+    @app.route("/delete")
+    def delete_image():
+        return handle_delete_image(request.args.get('filename'))
 
     app.shell_context_processor({"app": app, "db": db})
 

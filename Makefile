@@ -11,7 +11,9 @@ run:
 	@gunicorn -b 0.0.0.0:5000 manage:app
 
 test:
+	@docker-compose -f tests/database/docker-compose.yml up --build -d
 	@python -m pytest
+	@docker-compose -f tests/database/docker-compose.yml down -v
 
 pre-commit:
 	@pre-commit install
@@ -41,7 +43,14 @@ test-local:
 	@curl localhost
 
 build:
-	@docker build -t blog-service:latest .
+	@docker build -f Dockerfile.dev -t blog-service:latest .
+
+tag:
+	@docker tag blog-service:latest lyleokoth/blog-service:latest
+
+push:
+	@docker login
+	@docker push lyleokoth/blog-service:latest
 
 run-dev:
 	@docker run -p5000:5000 --env-file=./.env blog-service:latest
