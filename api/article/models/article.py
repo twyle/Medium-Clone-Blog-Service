@@ -6,7 +6,6 @@ from flask import current_app
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from ...extensions import db, ma
-from ...tasks import delete_file_s3
 from ..controller.helpers import send_notification
 
 
@@ -79,7 +78,7 @@ class Article(db.Model):
         """Delete an article."""
         article = Article.query.filter_by(id=article_id).first()
         if article.image:
-            send_notification(os.path.basename(article.image), 'delete')
+            send_notification(os.path.basename(article.image), "delete")
         db.session.delete(article)
         db.session.commit()
         return article
