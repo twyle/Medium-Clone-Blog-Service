@@ -1,5 +1,4 @@
 import os
-import sys
 
 from flasgger import LazyJSONEncoder
 from sqlalchemy_utils import database_exists

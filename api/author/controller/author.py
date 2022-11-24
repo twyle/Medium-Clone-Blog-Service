@@ -1,6 +1,6 @@
 import json
 
-from flask import current_app, jsonify
+from flask import jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token
 
 from ...article.models.article import Article

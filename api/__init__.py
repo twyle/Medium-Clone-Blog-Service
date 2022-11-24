@@ -3,6 +3,7 @@ import sys
 
 from flask import Flask, jsonify, request
 
+from .article.controller.helpers import handle_delete_image, handle_get_image
 from .config import Config
 from .config.logger import app_logger
 from .extensions import db
@@ -24,7 +25,7 @@ def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
     app.config.from_object(Config[config_name])
     try:
         check_configuration()
-    except Exception as e:
+    except ValueError as e:
         app_logger.critical(str(e))
         sys.exit(1)
 
@@ -65,6 +66,14 @@ def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
     @app.route("/")
     def health_check():
         return jsonify({"success": "hello from flask"}), HTTP_200_OK
+
+    @app.route("/image")
+    def get_image():
+        return handle_get_image(request.args.get("filename"))
+
+    @app.route("/delete")
+    def delete_image():
+        return handle_delete_image(request.args.get("filename"))
 
     app.shell_context_processor({"app": app, "db": db})
 

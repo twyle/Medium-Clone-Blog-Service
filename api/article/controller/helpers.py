@@ -1,15 +1,28 @@
+import json
 import os
 
-from flask import current_app
+from flask import current_app, jsonify, send_file
 from werkzeug.utils import secure_filename
 
-from ...tasks import upload_file_to_s3
+from ...extensions import sqs_client
 
 
 def allowed_file(filename: str) -> bool:
     """Check if the file is allowed."""
     allowed_extensions = current_app.config["ALLOWED_EXTENSIONS"]
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
+
+
+def send_notification(filename: str, action: str):
+    """Send notification to sqs"""
+    queue_url = os.environ["QUEUE_URL"]
+    message = {action: filename}
+    response = sqs_client.send_message(
+        QueueUrl=queue_url, MessageBody=json.dumps(message)
+    )
+    if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
+        return True
+    return False
 
 
 def upload_image(file):
@@ -24,12 +37,44 @@ def upload_image(file):
     filename = secure_filename(file.filename)
     file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
 
-    # upload_file_to_s3.delay(filename)
-    upload_file_to_s3(filename)
+    if send_notification(filename, "create"):
+        profile_pic = f"{current_app.config['S3_LOCATION']}{filename}"
+        return profile_pic
+    return ""
 
-    profile_pic = f"{current_app.config['S3_LOCATION']}{filename}"
 
-    return profile_pic
+def handle_get_image(filename: str):
+    """Loads the image."""
+    try:
+        file = get_image(filename)
+    except (ValueError) as e:
+        return jsonify({"error": str(e)})
+    else:
+        return file
+
+
+def delete_image(filename: str):
+    """Deletes an image."""
+    file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+    os.remove(file_path)
+    return jsonify({"success": "image deleted"}), 200
+
+
+def handle_delete_image(filename: str):
+    """Deletes the image."""
+    try:
+        delete = delete_image(filename)
+    except (ValueError, TypeError, FileNotFoundError) as e:
+        return jsonify({"error": str(e)})
+    else:
+        return delete
+
+
+def get_image(filename: str):
+    """Load a stored image."""
+    file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+    # return file_path
+    return send_file(file_path)
 
 
 def handle_upload_image(file):

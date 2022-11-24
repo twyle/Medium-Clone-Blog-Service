@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from ...extensions import db, ma
+from ...extensions import db
 
 
 @dataclass

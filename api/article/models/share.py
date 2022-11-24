@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ...extensions import db, ma
+from ...extensions import db
 
 
 class Share(db.Model):

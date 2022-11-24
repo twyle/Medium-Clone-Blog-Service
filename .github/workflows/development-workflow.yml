@@ -53,8 +53,8 @@ jobs:
     - name: Run the flake8 linter
       run: flake8
 
-    # - name: Run the pylint linter
-    #   run: pylint --rcfile=.pylintrc api/
+    - name: Run the pylint linter
+      run: pylint --rcfile=.pylintrc ./api
 
     # - name: Run the mypy linter
     #   run: mypy -p api
@@ -78,6 +78,7 @@ jobs:
         echo AWS_ACCESS_SECRET=${{secrets.AWS_ACCESS_SECRET}} >> .env
         echo AWS_REGION=${{secrets.AWS_REGION}} >> .env
         echo S3_BUCKET=${{secrets.S3_BUCKET}} >> .env
+        echo QUEUE_URL=${{secrets.QUEUE_URL}} >> .env
 
     - name: Create the test tables
       run: |
@@ -157,6 +158,7 @@ jobs:
         echo AWS_ACCESS_SECRET=${{secrets.AWS_ACCESS_SECRET}} >> .env
         echo AWS_REGION=${{secrets.AWS_REGION}} >> .env
         echo S3_BUCKET=${{secrets.S3_BUCKET}} >> .env
+        echo QUEUE_URL=${{secrets.QUEUE_URL}} >> .env
 
     - name: Create the development tables
       run: |

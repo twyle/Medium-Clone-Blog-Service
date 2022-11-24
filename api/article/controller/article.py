@@ -1,3 +1,4 @@
+# pylint: disable=unexpected-keyword-arg
 import os
 
 from flask import jsonify
@@ -5,13 +6,12 @@ from sqlalchemy.exc import NoForeignKeysError
 
 from ...author.models.author import Author
 from ...extensions import db
-from ...tasks import delete_file_s3
 from ..models.article import Article, article_schema, articles_schema
 from ..models.bookmark import Bookmark, bookmark_schema
-from ..models.comment import Comment, comment_schema, comments_schema
+from ..models.comment import Comment, comment_schema
 from ..models.like import Like, like_schema
 from ..models.views import View
-from .helpers import handle_upload_image, validate_article_data
+from .helpers import handle_upload_image, send_notification, validate_article_data
 
 
 def create_article(id: str, article_data: dict, article_image):
@@ -128,7 +128,7 @@ def update_article(author_id: str, article_id: str, article_data: dict, article_
     if article_image:
         if article_image["Image"]:
             if article.image:
-                delete_file_s3(os.path.basename(article.image))
+                send_notification(os.path.basename(article.image), "delete")
             profile_pic = handle_upload_image(article_image["Image"])
             article.image = profile_pic
 
