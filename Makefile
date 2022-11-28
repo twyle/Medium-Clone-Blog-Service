@@ -59,7 +59,7 @@ stop-dev:
 	@docker-compose -f docker-compose-dev.yml down
 
 coverage:
-	@coverage run -m pytest 
+	@coverage run -m pytest
 	@coverage report -m
 
 lint:
@@ -67,3 +67,5 @@ lint:
 	@black .
 	@flake8
 	@pylint --rcfile=.pylintrc ./api
+
+#pattern: (build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert|bump)(\(\S+\))?!?:(\s.*)

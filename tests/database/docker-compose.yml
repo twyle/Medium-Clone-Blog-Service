@@ -7,4 +7,3 @@ services:
       - ./.env
     ports:
       - 5432:5432
-

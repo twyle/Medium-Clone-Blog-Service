@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging.config
 
 from dotenv import load_dotenv

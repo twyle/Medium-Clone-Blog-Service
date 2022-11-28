@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class AuthorExists(Exception):
     """Raised when the given author exists."""
 

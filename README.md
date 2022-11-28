@@ -1,6 +1,6 @@
 # Medium Clone Blog Service
 
-> A standalone service for managing blog articles. This includes the creation, update, viewing and deletetion of articles.   
+> A standalone service for managing blog articles. This includes the creation, update, viewing and deletetion of articles.
 
 <p align="center">
   <img title="Bandit badge" alt="Bandit badge" src="https://github.com/twyle/Medium-Clone-Blog-Service/actions/workflows/feature-development-workflow.yml/badge.svg" />
@@ -31,7 +31,7 @@ This is a web application that enables an author to create, view, update and del
 5. Stats for a given post and author.
 The application is deployed to AWS Beanstalk and uses Postgres to store user data and articles, AWS S3 to store images and an AWS SQS queue to upload images to S3 using Lambda function.
 
-## Working 
+## Working
 
 It's pretty easy to use the application. On the home page (http://localhost:5000/apidocs):
 
@@ -72,7 +72,7 @@ Here is how to set up the application locally:
 
       ```sh
       pip install --upgrade pip # update the package manager
-      pip install -r requirements.txt  
+      pip install -r requirements.txt
       ```
 
   6. Create the environment variables for the service:
@@ -147,7 +147,7 @@ Here is how to set up the application locally:
 
   10. View the running application
 
-      Head over to http://0.0.0.0:5000/apidocs 
+      Head over to http://0.0.0.0:5000/apidocs
 
  <p align=center>
   <img src="assets/videos/blog-publishing-app.gif" />
@@ -161,8 +161,8 @@ Here is how to set up the application locally:
 
       The application consists of a single service.
 
-      1. Blog Service 
-        
+      1. Blog Service
+
         This services enables the creation, update, deletion and viewing of articles. The routes include:
 
         | Route                   | Method  | Description                 |
