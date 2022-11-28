@@ -32,31 +32,31 @@ def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
     register_error_handlers(app)
     app_logger.info("Registered the error handlers!")
 
-    # @app.before_first_request
-    # def application_startup():
-    #     """Log the beginning of the application."""
-    #     app_logger.info('Web app is up!')
+    @app.before_first_request
+    def application_startup():
+        """Log the beginning of the application."""
+        app_logger.info("Web app is up!")
 
-    # @app.before_request
-    # def log_request():
-    #     """Log the data held in the request"""
-    #     if request.method in ['POST', 'PUT']:
-    #         log_post_request()
-    #     elif request.method in ['GET', 'DELETE']:
-    #         log_get_request()
+    @app.before_request
+    def log_request():
+        """Log the data held in the request"""
+        if request.method in {"POST", "PUT"}:
+            log_post_request()
+        elif request.method in {"GET", "DELETE"}:
+            log_get_request()
 
-    # @app.after_request
-    # def log_response(response):
-    #     try:
-    #         get_response(response)
-    #     except Exception:
-    #         pass
-    #     finally:
-    #         return response
+    @app.after_request
+    def log_response(response):
+        try:
+            get_response(response)
+        except Exception:
+            pass
+        finally:
+            return response
 
-    # @app.teardown_request
-    # def log_exception(exc):
-    #     get_exception(exc)
+    @app.teardown_request
+    def log_exception(exc):
+        get_exception(exc)
 
     register_extensions(app)
     app_logger.info("Registered the extensions!")
