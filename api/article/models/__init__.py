@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .article import Article
 from .bookmark import Bookmark
 from .comment import Comment

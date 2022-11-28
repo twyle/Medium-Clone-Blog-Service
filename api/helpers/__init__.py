@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .helpers import check_configuration, register_blueprints, register_extensions
 
 __all__ = [

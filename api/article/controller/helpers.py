@@ -1,20 +1,74 @@
+# -*- coding: utf-8 -*-
+"""This module declares helper methods used by the article.py
+module.
+
+Has the following functions:
+1. allowed_file():
+    Checks if the given file can be uploaded to the server
+    based on the file's extension.
+2. send_notification():
+    Sends the filename and whether is is to be created or
+    deleted to an sns queue.
+3. upload_image():
+    Saves the uploaded image to the server and sends a notification
+    to the sns queue.
+"""
 import json
 import os
 
 from flask import current_app, jsonify, send_file
+from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from ...extensions import sqs_client
 
 
 def allowed_file(filename: str) -> bool:
-    """Check if the file is allowed."""
+    """Check if the file is allowed.
+
+    Parameters
+    ----------
+    filename: str
+        The name of the uploaded file with its extension
+
+    Raises
+    ------
+    TypeError:
+        If the filename is not a string or has not extension
+    ValuError:
+        If the filename is empty
+
+    returns
+    -------
+    bool:
+        True if file is allowed else False
+    """
+    if not filename:
+        raise ValueError('The filename must be provided!')
+    if not isinstance(filename, str):
+        raise TypeError('The filename has to be a string.')
+    if '.' not in filename:
+        raise TypeError('The file lacks an extension')
     allowed_extensions = current_app.config["ALLOWED_EXTENSIONS"]
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
 
 
 def send_notification(filename: str, action: str):
-    """Send notification to sqs"""
+    """Send notification to sqs.
+
+    Parameters
+    ----------
+    filename: str
+        The name of the file
+    action: str
+        What action to take i.e create or delete
+        create results in lambda function uploading the file
+        wheres delete results in deletion of file from s3.
+    Returns
+    -------
+    bool:
+        True if notification was sent else False.
+    """
     queue_url = os.environ["QUEUE_URL"]
     message = {action: filename}
     response = sqs_client.send_message(
@@ -25,6 +79,33 @@ def send_notification(filename: str, action: str):
     return False
 
 
+def save_image(file: FileStorage) -> bool:
+    """Save a file in the server.
+
+    Parameters
+    ----------
+    file: werkzeug.FileStorage
+        The uploaded file and its metadata.
+
+    Raises
+    ------
+    Exception:
+        When the image cannot be saved
+
+    return
+    ------
+    bool:
+        Whether or not file was successfully stored.
+    """
+    try:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
+    except Exception as e:
+        raise e
+    else:
+        return True
+
+
 def upload_image(file):
     """Upload image to S3."""
     if not file:
@@ -33,12 +114,9 @@ def upload_image(file):
         raise ValueError("The file has to be provided!")
     if not allowed_file(file.filename):
         raise TypeError("That file type is not allowed!")
-
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
-
-    if send_notification(filename, "create"):
-        profile_pic = f"{current_app.config['S3_LOCATION']}{filename}"
+    save_image(file)
+    if send_notification(file.filename, "create"):
+        profile_pic = f"{current_app.config['S3_LOCATION']}{file.filename}"
         return profile_pic
     return ""
 
