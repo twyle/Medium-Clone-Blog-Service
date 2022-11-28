@@ -106,15 +106,35 @@ def save_image(file: FileStorage) -> bool:
         return True
 
 
-def upload_image(file):
-    """Upload image to S3."""
+def upload_image(file: FileStorage):
+    """Trigger the upload of image to s3.
+
+    Parameters
+    ----------
+    file: FileStorage
+        The file to be uploaded to s3
+
+    Raises:
+        Valuerror:
+            Whenimage is not provided
+        TypeError:
+            When ht filename is missing
+
+    Returns
+    -------
+    str:
+        The link to the uploaded image
+    """
     if not file:
         raise ValueError("The file has to be provided!")
     if file.filename == "":
         raise ValueError("The file has to be provided!")
     if not allowed_file(file.filename):
         raise TypeError("That file type is not allowed!")
-    save_image(file)
+    try:
+        save_image(file)
+    except (ValueError, TypeError) as e:
+        raise e
     if send_notification(file.filename, "create"):
         profile_pic = f"{current_app.config['S3_LOCATION']}{file.filename}"
         return profile_pic
@@ -122,7 +142,21 @@ def upload_image(file):
 
 
 def handle_get_image(filename: str):
-    """Loads the image."""
+    """Loads the image.
+
+    This route is used by the lambda function to upload
+    the image.
+
+    Parameters
+    ----------
+    filename: str
+        The name of the file to be uploaded.
+
+    Returns
+    ------
+    file:
+        The image to be stored in s3
+    """
     try:
         file = get_image(filename)
     except (ValueError) as e:
@@ -132,14 +166,43 @@ def handle_get_image(filename: str):
 
 
 def delete_image(filename: str):
-    """Deletes an image."""
+    """Delete an image.
+
+    This route is used by the lambda function to delete
+    the uploaded image.
+
+    Parameters
+    ----------
+    filename: str
+        The name of the file to be deleted.
+
+    Returns
+    -------
+    tuple: Flask.Response
+        The Flask response showing whether or not the
+        request was successful.
+    """
     file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
     os.remove(file_path)
     return jsonify({"success": "image deleted"}), 200
 
 
 def handle_delete_image(filename: str):
-    """Deletes the image."""
+    """Deletes the image.
+
+    Handles the GET request to delete the given image.
+
+    Parameters
+    ----------
+    filename: str
+        The name of the file to be deleted.
+
+    Returns
+    -------
+    tuple: Flask.Response
+        The Flask response showing whether or not the
+        request was successful.
+    """
     try:
         delete = delete_image(filename)
     except (ValueError, TypeError, FileNotFoundError) as e:
@@ -149,14 +212,35 @@ def handle_delete_image(filename: str):
 
 
 def get_image(filename: str):
-    """Load a stored image."""
+    """Load a stored image.
+
+    Parameters
+    ----------
+    filename: str
+        The name of the file to be loaded.
+
+    Returns
+    -------
+    Image:
+        The loaded image.
+    """
     file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-    # return file_path
     return send_file(file_path)
 
 
-def handle_upload_image(file):
-    """Handle image upload."""
+def handle_upload_image(file: FileStorage):
+    """Handle image upload.
+
+    Handles the request to upload the image.
+
+    file: FileStorage
+        The file to be uploaded to s3
+
+    Returns
+    -------
+    profile_pic: str
+        The link to the profile image.
+    """
     try:
         profile_pic = upload_image(file)
     except (ValueError, TypeError) as e:
@@ -167,8 +251,32 @@ def handle_upload_image(file):
         return profile_pic
 
 
-def validate_article_data(article_data):
-    """Validate article data."""
+def validate_article_data(article_data: dict):
+    """Validate article data.
+
+    Ensure that the data provided by the user contains
+    all the fields needed to create a new article.
+
+    Parameters
+    ----------
+    article_data: dict
+        A dictionary containing the fields used to create
+        a new article. e.g
+        {
+            'Title': 'Some Title',
+            'Text': 'Some text'
+        }
+
+    Raises
+    ------
+    ValuError:
+    TypeError:
+
+    Return
+    ------
+    bool:
+        True if the article data is good else False
+    """
     if not article_data:
         raise ValueError("The article data must be provided!")
     if not isinstance(article_data, dict):

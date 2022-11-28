@@ -1,5 +1,48 @@
 # -*- coding: utf-8 -*-
-"""This module contains all the article routes."""
+"""This module contains all the article routes.
+
+The various functions include:
+1. create_article():
+    For creating a new article
+2. get_article():
+    Fetching an article given the id
+3. update_article():
+    Update an article, given the id
+4. delete_article():
+    Delete an article, given the id
+5. get_all_articles():
+    Featch all articles inthe database
+6. get_comments():
+    Get the comments associated with a given article
+7. get_likes():
+    Get the likes associated with a given article
+8. get_bookmarks():
+    Get the bookmarks associated with a given article
+9. get_tags():
+    Get the tags associated with a given article
+10. get_articles_views()
+    Get the views for given article
+11. get_stats()
+    Get the stats for given article
+12. bookmark_article()
+    Bookmark a given article
+13. unbookmark_article()
+    Unbookmark a given article
+14. handle_like()
+    Like a given article
+15. handle_unlike()
+    Unlike a previously liked article
+16. tag_article()
+    Add a tag to a given article
+17. untag_article()
+    Remove a tag from a given article
+18. report_article()
+    Report an offensive article
+19. comment_article()
+    Comment on a given article.
+20. uncomment_article()
+    Delete a comment.
+"""
 from flasgger import swag_from
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
