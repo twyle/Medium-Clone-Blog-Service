@@ -879,13 +879,13 @@ def uncomment_article(comment_id: str, author_id: str) -> Response:
         author_id
     ):
         raise ValueError("You can only delete your own comments!")
-    comment = Comment.query.filter_by(author_id=author_id).first()
+    comment = Comment.query.filter_by(id=comment_id).first()
     db.session.delete(comment)
     db.session.commit()
     return comment_schema.dump(comment), HTTP_200_OK
 
 
-def handle_uncomment(article_id: str, author_id: str) -> Response:
+def handle_uncomment(comment_id: str, author_id: str) -> Response:
     """Handle DELETE request to delete a comment.
 
     Parameters
@@ -902,7 +902,7 @@ def handle_uncomment(article_id: str, author_id: str) -> Response:
         was successful.
     """
     try:
-        article_comment = uncomment_article(article_id, author_id)
+        article_comment = uncomment_article(comment_id, author_id)
     except (ValueError, TypeError) as e:
         return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
