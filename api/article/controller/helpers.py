@@ -114,7 +114,8 @@ def upload_image(file: FileStorage):
     file: FileStorage
         The file to be uploaded to s3
 
-    Raises:
+    Raises
+    ------
         Valuerror:
             Whenimage is not provided
         TypeError:

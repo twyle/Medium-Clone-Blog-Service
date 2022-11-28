@@ -2,11 +2,13 @@
 # pylint: disable=unexpected-keyword-arg
 import os
 
-from flask import jsonify
+from flask import Response, jsonify
 from sqlalchemy.exc import NoForeignKeysError
+from werkzeug.datastructures import FileStorage
 
 from ...author.models.author import Author
 from ...extensions import db
+from ...helpers.http_status_codes import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from ..models.article import Article, article_schema, articles_schema
 from ..models.bookmark import Bookmark, bookmark_schema
 from ..models.comment import Comment, comment_schema
@@ -15,8 +17,35 @@ from ..models.views import View
 from .helpers import handle_upload_image, send_notification, validate_article_data
 
 
-def create_article(id: str, article_data: dict, article_image):
-    """Handle the post request to create a new article."""
+def create_article(id: str, article_data: dict, article_image: FileStorage) -> Response:
+    """Create a new article.
+
+    Parameters
+    ----------
+    id: str
+        The authors id
+    article_data: dict
+        The article details e.g
+        {
+            'Title': 'Title',
+            'Text': 'Text'
+        }
+    article_image: FileStorage
+        The article image
+
+    Raises
+    ------
+    ValuError:
+        When the id is not provided
+    TypeError:
+        When the id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask response that shows whether or not the
+        request was successful.
+    """
     if not id:
         raise ValueError("The id has to be provided.")
     if not isinstance(id, str):
@@ -41,23 +70,64 @@ def create_article(id: str, article_data: dict, article_image):
     db.session.add(article)
     db.session.commit()
 
-    return article_schema.dumps(article), 201
+    return article_schema.dumps(article), HTTP_201_CREATED
 
 
-def handle_create_article(id: str, article_data: dict, pic):
-    """Handle the post request to create a new article."""
+def handle_create_article(id: str, article_data: dict, pic: FileStorage) -> Response:
+    """Handle the post request to create a new article.
+
+    Parameters
+    ----------
+    id: str
+        The authors id
+    article_data: dict
+        The article details e.g
+        {
+            'Title': 'Title',
+            'Text': 'Text'
+        }
+    pic: FileStorage
+        The article image
+
+    Returns
+    -------
+    Response:
+        Flask response that shows whether or not the
+        request was successful.
+    """
     try:
         article = create_article(id, article_data, pic)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     except NoForeignKeysError:
         return jsonify({"error": f"The author with id {id} does not exist."}), 400
     else:
         return article
 
 
-def get_article(article_id: str, id: str) -> dict:
-    """Get the user with the given id."""
+def get_article(article_id: str, id: str) -> Response:
+    """Get the article with the given id.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    id: str
+        The author id
+
+    Raises
+    ------
+    ValuError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     if not id:
         raise ValueError("The id has to be provided.")
     if not isinstance(id, str):
@@ -76,21 +146,66 @@ def get_article(article_id: str, id: str) -> dict:
     db.session.add(view)
     db.session.commit()
 
-    return article_schema.dump(article), 200
+    return article_schema.dump(article), HTTP_200_OK
 
 
-def handle_get_article(article_id: str, author_id: str):
-    """Get a single author."""
+def handle_get_article(article_id: str, author_id: str) -> Response:
+    """Handle GET request to fetch a single article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     try:
         author = get_article(article_id, author_id)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return author
 
 
-def update_article(author_id: str, article_id: str, article_data: dict, article_image):
-    """Handle the post request to create a new author."""
+def update_article(
+    author_id: str, article_id: str, article_data: dict, article_image: FileStorage
+) -> Response:
+    """Update a given article.
+
+    Parameters
+    ----------
+    author_id: str
+        The author's id
+    article_id: str
+        The article id
+    article_data: dict
+        The article details e.g
+        {
+            'Title': 'Title',
+            'Text': 'Text'
+        }
+    article_image: FileStorage
+        The article image
+
+    Raises
+    ------
+    ValuError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     if not author_id:
         raise ValueError("The author_id has to be provided.")
     if not isinstance(author_id, str):
@@ -136,22 +251,53 @@ def update_article(author_id: str, article_id: str, article_data: dict, article_
     db.session.add(article)
     db.session.commit()
 
-    return article_schema.dumps(article), 201
+    return article_schema.dumps(article), HTTP_200_OK
 
 
-def delete_article(article_id: str):
-    """Delete an article."""
+def delete_article(article_id: str) -> Response:
+    """Delete an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+
+    Raises
+    ------
+    ValuError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
         raise TypeError("The article id has to be a string")
     if not Article.article_with_id_exists(int(article_id)):
         raise ValueError(f"Their is no article with id {article_id}")
-    return article_schema.dump(Article.delete_article(int(article_id))), 200
+    return article_schema.dump(Article.delete_article(int(article_id))), HTTP_200_OK
 
 
 def handle_delete_article(article_id: str):
-    """List all authors."""
+    """Handle a GET request to delete an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     try:
         deleted_article = delete_article(article_id)
     except (ValueError, TypeError) as e:
@@ -163,31 +309,78 @@ def handle_delete_article(article_id: str):
 def handle_update_article(
     author_id: str, article_id: str, article_data: dict, article_image
 ):
-    """Handle the post request to create a new author."""
+    """Handle the PUT request to update an article.
+
+    Parameters
+    ----------
+    author_id: str
+        The author's id
+    article_id: str
+        The article id
+    article_data: dict
+        The article details e.g
+        {
+            'Title': 'Title',
+            'Text': 'Text'
+        }
+    article_image: FileStorage
+        The article image
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     try:
         article = update_article(author_id, article_id, article_data, article_image)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article
 
 
-def list_articles(author_id: str):
+def list_articles(author_id: str) -> Response:
+    """List all the articles.
+
+    Parameters
+    ----------
+    author_id: str, optional
+        The author id
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     if author_id:
         if not isinstance(author_id, str):
             raise ValueError("The author_id has to be a string.")
         if not Author.user_with_id_exists(int(author_id)):
             raise ValueError(f"The user with id {author_id} does not exist.")
-        return articles_schema.dump(Article.all_articles(int(author_id))), 200
-    return articles_schema.dump(Article.all_articles()), 200
+        return articles_schema.dump(Article.all_articles(int(author_id))), HTTP_200_OK
+    return articles_schema.dump(Article.all_articles()), HTTP_200_OK
 
 
 def handle_list_articles(author_id: str):
-    """List all authors."""
+    """Handle the GET request to list articles.
+
+    Parameters
+    ----------
+    author_id: str, optional
+        The author id
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     try:
         articles = list_articles(author_id)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return articles
 
