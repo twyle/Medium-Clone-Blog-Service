@@ -59,7 +59,7 @@ stop-dev:
 	@docker-compose -f docker-compose-dev.yml down
 
 coverage:
-	@coverage run -m pytest 
+	@coverage run -m pytest
 	@coverage report -m
 
 lint:
