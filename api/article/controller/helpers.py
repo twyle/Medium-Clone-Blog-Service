@@ -44,11 +44,11 @@ def allowed_file(filename: str) -> bool:
         True if file is allowed else False
     """
     if not filename:
-        raise ValueError('The filename must be provided!')
+        raise ValueError("The filename must be provided!")
     if not isinstance(filename, str):
-        raise TypeError('The filename has to be a string.')
-    if '.' not in filename:
-        raise TypeError('The file lacks an extension')
+        raise TypeError("The filename has to be a string.")
+    if "." not in filename:
+        raise TypeError("The file lacks an extension")
     allowed_extensions = current_app.config["ALLOWED_EXTENSIONS"]
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
 

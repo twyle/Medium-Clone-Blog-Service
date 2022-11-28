@@ -109,7 +109,9 @@ disable=
     #fix these later
     missing-raises-doc,
     logging-fstring-interpolation,
-    no-member
+    no-member,
+    lost-exception,
+    broad-except
 
 [REPORTS]
 
