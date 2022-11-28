@@ -758,8 +758,34 @@ def handle_untag(article_id: str, author_id: str, tag: str):
         return article_tag
 
 
-def comment_article(article_id: str, author_id: str, comment_data: dict):
-    """Coment on an article"""
+def comment_article(article_id: str, author_id: str, comment_data: dict) -> Response:
+    """Coment on an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+    comment_data: dict
+        The dictionary conatining the comment e.g
+        {
+            'comment': 'Some comment'
+        }
+
+    Raises
+    ------
+    ValuError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -783,21 +809,62 @@ def comment_article(article_id: str, author_id: str, comment_data: dict):
     )
     db.session.add(article_comment)
     db.session.commit()
-    return comment_schema.dump(article_comment), 201
+    return comment_schema.dump(article_comment), HTTP_201_CREATED
 
 
 def handle_comment(article_id: str, author_id: str, comment_data: dict):
-    """Comment on an article."""
+    """Handle POST request to create a comment.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+    comment_data: dict
+        The dictionary conatining the comment e.g
+        {
+            'comment': 'Some comment'
+        }
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     try:
         article_comment = comment_article(article_id, author_id, comment_data)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_comment
 
 
-def uncomment_article(comment_id: str, author_id: str):
-    """Coment on an article"""
+def uncomment_article(comment_id: str, author_id: str) -> Response:
+    """Remove a comment from an article.
+
+
+    Parameters
+    ----------
+    comment_id: str
+        The comment id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValuError:
+        When the comment id is not provided.
+    TypeError:
+        When the comment id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     if not comment_id:
         raise ValueError("The comment id has to be provided")
     if not isinstance(comment_id, str):
@@ -815,14 +882,28 @@ def uncomment_article(comment_id: str, author_id: str):
     comment = Comment.query.filter_by(author_id=author_id).first()
     db.session.delete(comment)
     db.session.commit()
-    return comment_schema.dump(comment), 201
+    return comment_schema.dump(comment), HTTP_200_OK
 
 
-def handle_uncomment(article_id: str, author_id: str):
-    """Comment on an article."""
+def handle_uncomment(article_id: str, author_id: str) -> Response:
+    """Handle DELETE request to delete a comment.
+
+    Parameters
+    ----------
+    comment_id: str
+        The comment id
+    author_id: str
+        The author id
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     try:
         article_comment = uncomment_article(article_id, author_id)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_comment
