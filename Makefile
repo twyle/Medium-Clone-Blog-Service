@@ -67,3 +67,5 @@ lint:
 	@black .
 	@flake8
 	@pylint --rcfile=.pylintrc ./api
+
+#pattern: (build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert|bump)(\(\S+\))?!?:(\s.*)
