@@ -111,7 +111,8 @@ disable=
     logging-fstring-interpolation,
     no-member,
     lost-exception,
-    broad-except
+    broad-except,
+    consider-using-alias
 
 [REPORTS]
 

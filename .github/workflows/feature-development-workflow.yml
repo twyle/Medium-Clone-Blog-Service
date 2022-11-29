@@ -93,7 +93,8 @@ jobs:
         if [ -d tests ] || [ -d test ]; then coverage report -m; fi
 
     - name: Coverage Report
-      run: coverage xml
+      run: |
+        if [ -d tests ] || [ -d test ]; then coverage xml -m; fi
 
   Test-Local:
 

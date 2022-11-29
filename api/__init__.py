@@ -12,11 +12,12 @@ import sys
 
 from flask import Flask, jsonify, request
 
-from .article.controller.helpers import handle_delete_image, handle_get_image
+from .article.controller.helpers import handle_get_image
 from .config import Config
 from .config.logger import app_logger
 from .extensions import db
 from .helpers import check_configuration, register_blueprints, register_extensions
+from .helpers.blueprint_helpers import handle_delete_image
 from .helpers.error_handlers import register_error_handlers
 from .helpers.hooks import get_exception, get_response, log_get_request, log_post_request
 from .helpers.http_status_codes import HTTP_200_OK
