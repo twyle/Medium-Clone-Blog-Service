@@ -1,4 +1,29 @@
 # -*- coding: utf-8 -*-
+"""This module declares methods used by the blueprints.
+
+Has the following functions:
+1. allowed_file():
+    Checks if the given file can be uploaded to the server
+    based on the file's extension.
+2. send_notification():
+    Sends the filename and whether is is to be created or
+    deleted to an sns queue.
+3. upload_image():
+    Saves the uploaded image to the server and sends a notification
+    to the sns queue.
+4. save_image():
+    Saves an image locally.
+5. handle_upload_image():
+    Handles the GET request to fetch an image stored locally.
+6. validate_article_data():
+    Checks the article data to ensure that all the required
+    fields are present.
+7. delete_image():
+    Deletes an image stored locally.
+8. handle_delete_image()
+    Handles the DELETE request to delete an image stored
+    locally.
+"""
 import json
 import os
 from typing import Tuple

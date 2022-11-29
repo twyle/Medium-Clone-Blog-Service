@@ -100,9 +100,9 @@ def handle_create_article(
 
     Returns
     -------
-    Response:
-        Flask response that shows whether or not the
-        request was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         article = create_article(id, article_data, pic)
@@ -133,9 +133,9 @@ def get_article(article_id: str, id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not id:
         raise ValueError("The id has to be provided.")
@@ -170,9 +170,9 @@ def handle_get_article(article_id: str, author_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         author = get_article(article_id, author_id)
@@ -211,9 +211,9 @@ def update_article(
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not author_id:
         raise ValueError("The author_id has to be provided.")
@@ -280,9 +280,9 @@ def delete_article(article_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -303,9 +303,9 @@ def handle_delete_article(article_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         deleted_article = delete_article(article_id)
@@ -337,9 +337,9 @@ def handle_update_article(
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         article = update_article(author_id, article_id, article_data, article_image)
@@ -359,9 +359,9 @@ def list_articles(author_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if author_id:
         if not isinstance(author_id, str):
@@ -382,9 +382,9 @@ def handle_list_articles(author_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         articles = list_articles(author_id)
@@ -413,9 +413,9 @@ def comments(article_id: str, author_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whether or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -469,7 +469,26 @@ def handle_likes(article_id: str):
 
 
 def bookmarks(article_id: str) -> Tuple[str, int]:
-    """Delete an author."""
+    """Get an article's bookmarks.
+
+    Parameters
+    ----------
+    article_id: str
+        The article's id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -480,17 +499,55 @@ def bookmarks(article_id: str) -> Tuple[str, int]:
 
 
 def handle_bookmarks(article_id: str) -> Tuple[str, int]:
-    """Handle the get request for articles published."""
+    """Handle the GET request to get an article's bookmarks.
+
+    Parameters
+    ----------
+    article_id: str
+        The article's id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     try:
         article_bookmarks = bookmarks(article_id)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_bookmarks
 
 
 def tags(article_id: str) -> Tuple[str, int]:
-    """Delete an author."""
+    """Get the tags for a particular article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article's id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -499,22 +556,58 @@ def tags(article_id: str) -> Tuple[str, int]:
         raise ValueError(f"Their is no article with id {article_id}")
     return (
         jsonify({"Article tags": Article.query.filter_by(id=article_id).first().tags}),
-        200,
+        HTTP_200_OK,
     )
 
 
 def handle_tags(article_id: str) -> Tuple[str, int]:
-    """Handle the get request for articles published."""
+    """Handle the GET request to get an article's tags.
+
+    Parameters
+    ----------
+    article_id: str
+        The article's id
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     try:
         article_tags = tags(article_id)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_tags
 
 
 def views(article_id: str, author_id: str) -> Tuple[str, int]:
-    """Delete an author."""
+    """Get the data about an article's readership.
+
+    This function lets you know about the authors and
+    dates when an article was read.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -532,21 +625,67 @@ def views(article_id: str, author_id: str) -> Tuple[str, int]:
             if views.author.id == int(author_id):
                 art_views.append(view)
         return art_views
-    return Article.query.filter_by(id=article_id).first().views, 200
+    return Article.query.filter_by(id=article_id).first().views, HTTP_200_OK
 
 
 def handle_views(article_id: str, author_id: str) -> Tuple[str, int]:
-    """Handle the get request for articles published."""
+    """Handle the GET request to get an articles stats.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     try:
         article_views = views(article_id, author_id)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_views
 
 
 def article_stats(article_id: str) -> Tuple[str, int]:
-    """Delete an author."""
+    """Get the stats for a given article.
+
+    This includes:
+    1. Number of views/reads
+    2. Number of likes
+    3. Number of comments
+    4. The number of bookmarks
+
+    Parameters
+    ----------
+    article_id: str
+        The article's id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -559,11 +698,23 @@ def article_stats(article_id: str) -> Tuple[str, int]:
         "comments": len(Article.query.filter_by(id=article_id).first().comments),
         "bookmarks": len(Article.query.filter_by(id=article_id).first().bookmarks),
     }
-    return stats, 200
+    return stats, HTTP_200_OK
 
 
 def handle_article_stats(article_id: str) -> Tuple[str, int]:
-    """Handle the get request for articles published."""
+    """Handle the GET request to obtain an article's stats.
+
+    Parameters
+    ----------
+    article_id: str
+        The article's id
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     try:
         stats = article_stats(article_id)
     except (ValueError, TypeError) as e:
@@ -573,7 +724,28 @@ def handle_article_stats(article_id: str) -> Tuple[str, int]:
 
 
 def bookmark(article_id: str, author_id: str) -> Tuple[str, int]:
-    """Delete an author."""
+    """Create a bookmark for a given article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -597,7 +769,28 @@ def bookmark(article_id: str, author_id: str) -> Tuple[str, int]:
 
 
 def handle_bookmark(article_id: str, author_id: str) -> Tuple[str, int]:
-    """Handle the get request for articles published."""
+    """Handle the GET request to bookmark an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     try:
         article_bookmark = bookmark(article_id, author_id)
     except (ValueError, TypeError) as e:
@@ -607,7 +800,28 @@ def handle_bookmark(article_id: str, author_id: str) -> Tuple[str, int]:
 
 
 def unbookmark(article_id: str, author_id: str) -> Tuple[str, int]:
-    """Delete an author."""
+    """Delete a bookmark.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -631,7 +845,28 @@ def unbookmark(article_id: str, author_id: str) -> Tuple[str, int]:
 
 
 def handle_unbookmark(article_id: str, author_id: str) -> Tuple[str, int]:
-    """Handle the get request for articles published."""
+    """Handle the DELETE request to delete a bookmark.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     try:
         article_bookmark = unbookmark(article_id, author_id)
     except (ValueError, TypeError) as e:
@@ -641,7 +876,28 @@ def handle_unbookmark(article_id: str, author_id: str) -> Tuple[str, int]:
 
 
 def like(article_id: str, author_id: str) -> Tuple[str, int]:
-    """Delete an author."""
+    """Like an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -661,15 +917,29 @@ def like(article_id: str, author_id: str) -> Tuple[str, int]:
     like = Like(article=article, author=author)
     db.session.add(like)
     db.session.commit()
-    return like_schema.dump(like), 200
+    return like_schema.dump(like), HTTP_201_CREATED
 
 
 def handle_like(article_id: str, author_id: str) -> Tuple[str, int]:
-    """Handle the get request for articles published."""
+    """Handle the GET request to like an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Returns
+    -------
+    Tuple[str, int]:
+        The json string representing the request
+        response as well as the response code.
+    """
     try:
         article_like = like(article_id, author_id)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_like
 
@@ -693,9 +963,9 @@ def unlike(article_id: str, author_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -731,9 +1001,9 @@ def handle_unlike(article_id: str, author_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         article_like = unlike(article_id, author_id)
@@ -764,9 +1034,9 @@ def tag_article(article_id: str, author_id: str, tag: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -813,9 +1083,9 @@ def handle_tag(article_id: str, author_id: str, tag: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         article_tag = tag_article(article_id, author_id, tag)
@@ -846,9 +1116,9 @@ def untag_article(article_id: str, author_id: str, tag: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -895,9 +1165,9 @@ def handle_untag(article_id: str, author_id: str, tag: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         article_tag = untag_article(article_id, author_id, tag)
@@ -933,9 +1203,9 @@ def comment_article(
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -982,9 +1252,9 @@ def handle_comment(
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         article_comment = comment_article(article_id, author_id, comment_data)
@@ -1014,9 +1284,9 @@ def uncomment_article(comment_id: str, author_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not comment_id:
         raise ValueError("The comment id has to be provided")
@@ -1050,9 +1320,9 @@ def handle_uncomment(comment_id: str, author_id: str) -> Tuple[str, int]:
 
     Returns
     -------
-    Response:
-        Flask Response showing whhter or not the request
-        was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     try:
         article_comment = uncomment_article(comment_id, author_id)

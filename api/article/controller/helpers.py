@@ -3,15 +3,10 @@
 module.
 
 Has the following functions:
-1. allowed_file():
-    Checks if the given file can be uploaded to the server
-    based on the file's extension.
-2. send_notification():
-    Sends the filename and whether is is to be created or
-    deleted to an sns queue.
-3. upload_image():
-    Saves the uploaded image to the server and sends a notification
-    to the sns queue.
+1. handle_get_image():
+    Handles the GET request to load an image stored locally.
+2. get_image():
+    Loads a locally stored image.
 """
 import os
 
