@@ -7,7 +7,7 @@ from flask import current_app
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from ...extensions import db, ma
-from ..controller.helpers import send_notification
+from ...helpers.blueprint_helpers import send_notification
 
 
 @dataclass

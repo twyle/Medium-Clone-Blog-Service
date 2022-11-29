@@ -9,13 +9,17 @@ from werkzeug.datastructures import FileStorage
 
 from ...author.models.author import Author
 from ...extensions import db
+from ...helpers.blueprint_helpers import (
+    handle_upload_image,
+    send_notification,
+    validate_article_data,
+)
 from ...helpers.http_status_codes import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from ..models.article import Article, article_schema, articles_schema
 from ..models.bookmark import Bookmark, bookmark_schema
 from ..models.comment import Comment, comment_schema
 from ..models.like import Like, like_schema
 from ..models.views import View
-from .helpers import handle_upload_image, send_notification, validate_article_data
 
 
 def create_article(
