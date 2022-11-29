@@ -11,6 +11,8 @@ from api.author.models.author import Author
 def test_login_author():
     author = Author(name="Lyle", email_address="lyle6@gmail.com")
     with create_app().app_context():
+        db.drop_all()
+        db.create_all()
         db.session.add(author)
         db.session.commit()
 

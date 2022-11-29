@@ -11,9 +11,9 @@ run:
 	@gunicorn -b 0.0.0.0:5000 manage:app
 
 test:
+	@docker-compose -f tests/database/docker-compose.yml down -v
 	@docker-compose -f tests/database/docker-compose.yml up --build -d
 	@python -m pytest
-	@docker-compose -f tests/database/docker-compose.yml down -v
 
 pre-commit:
 	@pre-commit install

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=unexpected-keyword-arg
 import os
+from typing import Tuple
 
-from flask import Response, jsonify
+from flask import jsonify
 from sqlalchemy.exc import NoForeignKeysError
 from werkzeug.datastructures import FileStorage
 
@@ -17,7 +18,9 @@ from ..models.views import View
 from .helpers import handle_upload_image, send_notification, validate_article_data
 
 
-def create_article(id: str, article_data: dict, article_image: FileStorage) -> Response:
+def create_article(
+    id: str, article_data: dict, article_image: FileStorage
+) -> Tuple[str, int]:
     """Create a new article.
 
     Parameters
@@ -42,9 +45,9 @@ def create_article(id: str, article_data: dict, article_image: FileStorage) -> R
 
     Returns
     -------
-    Response:
-        Flask response that shows whether or not the
-        request was successful.
+    Tuple[str, int]:
+        The jsong string representing the request
+        response as well as the response code.
     """
     if not id:
         raise ValueError("The id has to be provided.")
@@ -73,7 +76,9 @@ def create_article(id: str, article_data: dict, article_image: FileStorage) -> R
     return article_schema.dumps(article), HTTP_201_CREATED
 
 
-def handle_create_article(id: str, article_data: dict, pic: FileStorage) -> Response:
+def handle_create_article(
+    id: str, article_data: dict, pic: FileStorage
+) -> Tuple[str, int]:
     """Handle the post request to create a new article.
 
     Parameters
@@ -105,7 +110,7 @@ def handle_create_article(id: str, article_data: dict, pic: FileStorage) -> Resp
         return article
 
 
-def get_article(article_id: str, id: str) -> Response:
+def get_article(article_id: str, id: str) -> Tuple[str, int]:
     """Get the article with the given id.
 
     Parameters
@@ -149,7 +154,7 @@ def get_article(article_id: str, id: str) -> Response:
     return article_schema.dump(article), HTTP_200_OK
 
 
-def handle_get_article(article_id: str, author_id: str) -> Response:
+def handle_get_article(article_id: str, author_id: str) -> Tuple[str, int]:
     """Handle GET request to fetch a single article.
 
     Parameters
@@ -175,7 +180,7 @@ def handle_get_article(article_id: str, author_id: str) -> Response:
 
 def update_article(
     author_id: str, article_id: str, article_data: dict, article_image: FileStorage
-) -> Response:
+) -> Tuple[str, int]:
     """Update a given article.
 
     Parameters
@@ -254,7 +259,7 @@ def update_article(
     return article_schema.dumps(article), HTTP_200_OK
 
 
-def delete_article(article_id: str) -> Response:
+def delete_article(article_id: str) -> Tuple[str, int]:
     """Delete an article.
 
     Parameters
@@ -284,7 +289,7 @@ def delete_article(article_id: str) -> Response:
     return article_schema.dump(Article.delete_article(int(article_id))), HTTP_200_OK
 
 
-def handle_delete_article(article_id: str):
+def handle_delete_article(article_id: str) -> Tuple[str, int]:
     """Handle a GET request to delete an article.
 
     Parameters
@@ -308,7 +313,7 @@ def handle_delete_article(article_id: str):
 
 def handle_update_article(
     author_id: str, article_id: str, article_data: dict, article_image
-):
+) -> Tuple[str, int]:
     """Handle the PUT request to update an article.
 
     Parameters
@@ -340,7 +345,7 @@ def handle_update_article(
         return article
 
 
-def list_articles(author_id: str) -> Response:
+def list_articles(author_id: str) -> Tuple[str, int]:
     """List all the articles.
 
     Parameters
@@ -363,7 +368,7 @@ def list_articles(author_id: str) -> Response:
     return articles_schema.dump(Article.all_articles()), HTTP_200_OK
 
 
-def handle_list_articles(author_id: str):
+def handle_list_articles(author_id: str) -> Tuple[str, int]:
     """Handle the GET request to list articles.
 
     Parameters
@@ -385,8 +390,29 @@ def handle_list_articles(author_id: str):
         return articles
 
 
-def comments(article_id: str, author_id: str):
-    """Delete an author."""
+def comments(article_id: str, author_id: str) -> Tuple[str, int]:
+    """Coment on an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whether or not the request
+        was successful.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -404,10 +430,10 @@ def comments(article_id: str, author_id: str):
             if comment.author.id == int(author_id):
                 art_comments.append(comment)
         return art_comments
-    return Article.query.filter_by(id=article_id).first().comments, 200
+    return Article.query.filter_by(id=article_id).first().comments, HTTP_200_OK
 
 
-def handle_comments(article_id: str, author_id: str):
+def handle_comments(article_id: str, author_id: str) -> Tuple[str, int]:
     """Handle the get request for articles published."""
     try:
         article_comments = comments(article_id, author_id)
@@ -417,8 +443,8 @@ def handle_comments(article_id: str, author_id: str):
         return article_comments
 
 
-def likes(article_id: str):
-    """Delete an author."""
+def likes(article_id: str) -> Tuple[str, int]:
+    """Get all the likes for a given article."""
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -438,7 +464,7 @@ def handle_likes(article_id: str):
         return article_likes
 
 
-def bookmarks(article_id: str):
+def bookmarks(article_id: str) -> Tuple[str, int]:
     """Delete an author."""
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -449,7 +475,7 @@ def bookmarks(article_id: str):
     return Article.query.filter_by(id=article_id).first().bookmarks, 200
 
 
-def handle_bookmarks(article_id: str):
+def handle_bookmarks(article_id: str) -> Tuple[str, int]:
     """Handle the get request for articles published."""
     try:
         article_bookmarks = bookmarks(article_id)
@@ -459,7 +485,7 @@ def handle_bookmarks(article_id: str):
         return article_bookmarks
 
 
-def tags(article_id: str):
+def tags(article_id: str) -> Tuple[str, int]:
     """Delete an author."""
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -473,7 +499,7 @@ def tags(article_id: str):
     )
 
 
-def handle_tags(article_id: str):
+def handle_tags(article_id: str) -> Tuple[str, int]:
     """Handle the get request for articles published."""
     try:
         article_tags = tags(article_id)
@@ -483,7 +509,7 @@ def handle_tags(article_id: str):
         return article_tags
 
 
-def views(article_id: str, author_id: str):
+def views(article_id: str, author_id: str) -> Tuple[str, int]:
     """Delete an author."""
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -505,7 +531,7 @@ def views(article_id: str, author_id: str):
     return Article.query.filter_by(id=article_id).first().views, 200
 
 
-def handle_views(article_id: str, author_id: str):
+def handle_views(article_id: str, author_id: str) -> Tuple[str, int]:
     """Handle the get request for articles published."""
     try:
         article_views = views(article_id, author_id)
@@ -515,7 +541,7 @@ def handle_views(article_id: str, author_id: str):
         return article_views
 
 
-def article_stats(article_id: str):
+def article_stats(article_id: str) -> Tuple[str, int]:
     """Delete an author."""
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -532,7 +558,7 @@ def article_stats(article_id: str):
     return stats, 200
 
 
-def handle_article_stats(article_id: str):
+def handle_article_stats(article_id: str) -> Tuple[str, int]:
     """Handle the get request for articles published."""
     try:
         stats = article_stats(article_id)
@@ -542,7 +568,7 @@ def handle_article_stats(article_id: str):
         return stats
 
 
-def bookmark(article_id: str, author_id: str):
+def bookmark(article_id: str, author_id: str) -> Tuple[str, int]:
     """Delete an author."""
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -566,7 +592,7 @@ def bookmark(article_id: str, author_id: str):
     return bookmark_schema.dump(bookmark), 200
 
 
-def handle_bookmark(article_id: str, author_id: str):
+def handle_bookmark(article_id: str, author_id: str) -> Tuple[str, int]:
     """Handle the get request for articles published."""
     try:
         article_bookmark = bookmark(article_id, author_id)
@@ -576,7 +602,7 @@ def handle_bookmark(article_id: str, author_id: str):
         return article_bookmark
 
 
-def unbookmark(article_id: str, author_id: str):
+def unbookmark(article_id: str, author_id: str) -> Tuple[str, int]:
     """Delete an author."""
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -600,7 +626,7 @@ def unbookmark(article_id: str, author_id: str):
     return bookmark_schema.dump(bookmark), 200
 
 
-def handle_unbookmark(article_id: str, author_id: str):
+def handle_unbookmark(article_id: str, author_id: str) -> Tuple[str, int]:
     """Handle the get request for articles published."""
     try:
         article_bookmark = unbookmark(article_id, author_id)
@@ -610,7 +636,7 @@ def handle_unbookmark(article_id: str, author_id: str):
         return article_bookmark
 
 
-def like(article_id: str, author_id: str):
+def like(article_id: str, author_id: str) -> Tuple[str, int]:
     """Delete an author."""
     if not article_id:
         raise ValueError("The article id has to be provided")
@@ -634,7 +660,7 @@ def like(article_id: str, author_id: str):
     return like_schema.dump(like), 200
 
 
-def handle_like(article_id: str, author_id: str):
+def handle_like(article_id: str, author_id: str) -> Tuple[str, int]:
     """Handle the get request for articles published."""
     try:
         article_like = like(article_id, author_id)
@@ -644,8 +670,29 @@ def handle_like(article_id: str, author_id: str):
         return article_like
 
 
-def unlike(article_id: str, author_id: str):
-    """Delete an author."""
+def unlike(article_id: str, author_id: str) -> Tuple[str, int]:
+    """Unlike an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
@@ -665,21 +712,58 @@ def unlike(article_id: str, author_id: str):
     ).first()
     db.session.delete(like)
     db.session.commit()
-    return like_schema.dump(like), 200
+    return like_schema.dump(like), HTTP_200_OK
 
 
-def handle_unlike(article_id: str, author_id: str):
-    """Handle the get request for articles published."""
+def handle_unlike(article_id: str, author_id: str) -> Tuple[str, int]:
+    """Handle DELETE request to delete an article like.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     try:
         article_like = unlike(article_id, author_id)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_like
 
 
-def tag_article(article_id: str, author_id: str, tag: str):
-    """Delete an author."""
+def tag_article(article_id: str, author_id: str, tag: str) -> Tuple[str, int]:
+    """Add a tag to an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+    tag: str
+        The tag to remove
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not tag:
@@ -705,21 +789,63 @@ def tag_article(article_id: str, author_id: str, tag: str):
     article.tags = tags.copy()
     db.session.add(article)
     db.session.commit()
-    return jsonify({"article tags": Article.get_article(int(article_id)).tags}), 200
+    return (
+        jsonify({"article tags": Article.get_article(int(article_id)).tags}),
+        HTTP_201_CREATED,
+    )
 
 
-def handle_tag(article_id: str, author_id: str, tag: str):
-    """Handle the get request for articles published."""
+def handle_tag(article_id: str, author_id: str, tag: str) -> Tuple[str, int]:
+    """Handle GET request to tag an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+    tag: str
+        The tag to remove
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     try:
         article_tag = tag_article(article_id, author_id, tag)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_tag
 
 
-def untag_article(article_id: str, author_id: str, tag: str):
-    """Delete an author."""
+def untag_article(article_id: str, author_id: str, tag: str) -> Tuple[str, int]:
+    """Remove a tag from an article.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+    tag: str
+        The tag to remove
+
+    Raises
+    ------
+    ValueError:
+        When the article id is not provided
+    TypeError:
+        When the article id is not a string
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not tag:
@@ -745,20 +871,41 @@ def untag_article(article_id: str, author_id: str, tag: str):
     article.tags = tags.copy()
     db.session.add(article)
     db.session.commit()
-    return jsonify({"article tags": Article.get_article(int(article_id)).tags}), 200
+    return (
+        jsonify({"article tags": Article.get_article(int(article_id)).tags}),
+        HTTP_200_OK,
+    )
 
 
-def handle_untag(article_id: str, author_id: str, tag: str):
-    """Handle the get request for articles published."""
+def handle_untag(article_id: str, author_id: str, tag: str) -> Tuple[str, int]:
+    """Handle DELETE request to remove a tag from an artcle.
+
+    Parameters
+    ----------
+    article_id: str
+        The article id
+    author_id: str
+        The author id
+    tag: str
+        The tag to remove
+
+    Returns
+    -------
+    Response:
+        Flask Response showing whhter or not the request
+        was successful.
+    """
     try:
         article_tag = untag_article(article_id, author_id, tag)
     except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), HTTP_400_BAD_REQUEST
     else:
         return article_tag
 
 
-def comment_article(article_id: str, author_id: str, comment_data: dict) -> Response:
+def comment_article(
+    article_id: str, author_id: str, comment_data: dict
+) -> Tuple[str, int]:
     """Coment on an article.
 
     Parameters
@@ -812,7 +959,9 @@ def comment_article(article_id: str, author_id: str, comment_data: dict) -> Resp
     return comment_schema.dump(article_comment), HTTP_201_CREATED
 
 
-def handle_comment(article_id: str, author_id: str, comment_data: dict):
+def handle_comment(
+    article_id: str, author_id: str, comment_data: dict
+) -> Tuple[str, int]:
     """Handle POST request to create a comment.
 
     Parameters
@@ -841,7 +990,7 @@ def handle_comment(article_id: str, author_id: str, comment_data: dict):
         return article_comment
 
 
-def uncomment_article(comment_id: str, author_id: str) -> Response:
+def uncomment_article(comment_id: str, author_id: str) -> Tuple[str, int]:
     """Remove a comment from an article.
 
 
@@ -885,7 +1034,7 @@ def uncomment_article(comment_id: str, author_id: str) -> Response:
     return comment_schema.dump(comment), HTTP_200_OK
 
 
-def handle_uncomment(comment_id: str, author_id: str) -> Response:
+def handle_uncomment(comment_id: str, author_id: str) -> Tuple[str, int]:
     """Handle DELETE request to delete a comment.
 
     Parameters
