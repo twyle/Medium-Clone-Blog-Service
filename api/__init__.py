@@ -12,12 +12,10 @@ import sys
 
 from flask import Flask, jsonify, request
 
-from .article.controller.helpers import handle_get_image
 from .config import Config
 from .config.logger import app_logger
 from .extensions import db
 from .helpers import check_configuration, register_blueprints, register_extensions
-from .helpers.blueprint_helpers import handle_delete_image
 from .helpers.error_handlers import register_error_handlers
 from .helpers.hooks import get_exception, get_response, log_get_request, log_post_request
 from .helpers.http_status_codes import HTTP_200_OK
@@ -95,25 +93,6 @@ def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
     def health_check():
         """Check if the application is running."""
         return jsonify({"success": "hello from flask"}), HTTP_200_OK
-
-    @app.route("/image")
-    def get_image():
-        """Fetch an image uploaded and stored in the server.
-
-        This route is accessed by the Lambda function in
-        order to upload the image stored locally to s3.
-        """
-        return handle_get_image(request.args.get("filename"))
-
-    @app.route("/delete")
-    def delete_image():
-        """Delete an image after being uploaded to s3.
-
-        This route is accessed by a lambda function to
-        trigger the deletion of animage after it's uploaded
-        to s3.
-        """
-        return handle_delete_image(request.args.get("filename"))
 
     app.shell_context_processor({"app": app, "db": db})
 

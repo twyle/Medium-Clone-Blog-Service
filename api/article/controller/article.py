@@ -9,12 +9,9 @@ from werkzeug.datastructures import FileStorage
 
 from ...author.models.author import Author
 from ...extensions import db
-from ...helpers.blueprint_helpers import (
-    handle_upload_image,
-    send_notification,
-    validate_article_data,
-)
+from ...helpers.blueprint_helpers import handle_upload_image, validate_article_data
 from ...helpers.http_status_codes import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from ...tasks import delete_file_s3
 from ..models.article import Article, article_schema, articles_schema
 from ..models.bookmark import Bookmark, bookmark_schema
 from ..models.comment import Comment, comment_schema
@@ -253,7 +250,7 @@ def update_article(
     if article_image:
         if article_image["Image"]:
             if article.image:
-                send_notification(os.path.basename(article.image), "delete")
+                delete_file_s3(os.path.basename(article.image))
             profile_pic = handle_upload_image(article_image["Image"])
             article.image = profile_pic
 
@@ -1266,7 +1263,6 @@ def handle_comment(
 
 def uncomment_article(comment_id: str, author_id: str) -> Tuple[str, int]:
     """Remove a comment from an article.
-
 
     Parameters
     ----------

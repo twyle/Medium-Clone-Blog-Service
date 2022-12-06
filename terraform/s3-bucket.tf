@@ -1,20 +1,34 @@
-resource "aws_s3_bucket" "bucket" {
-  bucket = "my-test-bucket-odessa2"
-  acl = "private"
+resource "aws_s3_bucket" "test-bucket" {
+  bucket = "test-bucket-lyle"
+
   tags = {
-    Name = "My bucket"
+    Name        = "My bucket"
+    Environment = "Dev"
   }
-  versioning {
-    enabled = true
-  }
-  lifecycle_rule {
-    enabled = true
-    transition {
-      days = 40
-      storage_class = "STANDARD_IA"
+}
+
+resource "aws_s3_bucket_acl" "public-acl" {
+  bucket = aws_s3_bucket.test-bucket.id
+  acl    = "public-read"
+}
+
+resource "aws_s3_bucket_policy" "public_read_access" {
+  bucket = aws_s3_bucket.test-bucket.id
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Sid": "AllowPublicRead",
+	    "Principal": "*",
+      "Action": [ "s3:*" ],
+      "Resource": [
+        "${aws_s3_bucket.test-bucket.arn}",
+        "${aws_s3_bucket.test-bucket.arn}/*"
+      ]
     }
-    expiration {
-      days = 60
-    }
-  }
+  ]
+}
+EOF
 }

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""This package declares all the models used by the article
-blueprint.
+"""Declares all the models used by the article blueprint.
 
 The models include:
 1. Article:
