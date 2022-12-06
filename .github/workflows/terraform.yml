@@ -55,7 +55,7 @@ jobs:
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
 
             github.issues.createComment({
-              issue_number: context.github.run_number,
+              issue_number: 1,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: output
